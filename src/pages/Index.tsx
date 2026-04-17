@@ -118,13 +118,13 @@ const Index = () => {
             className="text-5xl sm:text-6xl md:text-8xl lg:text-9xl text-white tracking-tight leading-[1.02]"
             style={{ fontFamily: "'Instrument Serif', serif" }}
           >
-            Designer & <em className="italic text-white/80">développeur</em>.
+            Développeur, <em className="italic text-white/80">Gestionnaire</em> & Designer.
           </h1>
 
           <p className="text-white/70 text-base md:text-lg leading-relaxed max-w-xl px-4">
             Étudiant en Master MIAGE (Méthodes Informatiques Appliquées à la Gestion des Entreprises)
-            à l'UGB. Je conçois des produits numériques qui accompagnent les entreprises et créateurs
-            africains.
+            à l'UGB. Je pilote des projets numériques, conçois des interfaces et développe des
+            solutions qui accompagnent les entreprises et créateurs africains.
           </p>
 
           <div className="flex items-center gap-3 flex-wrap justify-center">
