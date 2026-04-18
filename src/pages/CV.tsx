@@ -212,8 +212,12 @@ const CV = () => {
             <div>
               <div className="cv-skills-col-title">Développement</div>
               <div className="cv-tags">
-                <span className="cv-tag">Frontend (React, Tailwind)</span>
-                <span className="cv-tag">Backend / APIs</span>
+                <span className="cv-tag">PWA</span>
+                <span className="cv-tag">React</span>
+                <span className="cv-tag">TypeScript</span>
+                <span className="cv-tag">Tailwind CSS</span>
+                <span className="cv-tag">Node.js</span>
+                <span className="cv-tag">REST APIs</span>
                 <span className="cv-tag">Bases de données</span>
                 <span className="cv-tag">Full-stack</span>
                 <span className="cv-tag">Git</span>

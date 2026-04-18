@@ -9,6 +9,7 @@ const skills = [
     title: "Management & Gestion",
     description:
       "Formé en comptabilité, économie, finance d'entreprise et management de projet — j'analyse, planifie et pilote des initiatives de bout en bout avec une vision orientée résultats.",
+    tags: ["Comptabilité", "Économie", "Finance d'entreprise", "Management de projet", "Gestion d'entreprise", "Analyse financière"],
     wide: true,
   },
   {
@@ -16,7 +17,8 @@ const skills = [
     tag: "Frontend",
     title: "Développement Frontend",
     description:
-      "Je construis des expériences web responsives, accessibles et performantes avec des frameworks modernes.",
+      "Je construis des applications web progressives (PWA) et des expériences web responsives, accessibles et performantes avec des technologies modernes.",
+    tags: ["PWA", "React", "TypeScript", "Tailwind CSS", "Vite"],
     wide: false,
   },
   {
@@ -25,6 +27,7 @@ const skills = [
     title: "Développement Backend",
     description:
       "Je conçois des APIs, des bases de données et de la logique serveur pour alimenter des applications full-stack fiables.",
+    tags: ["Node.js", "REST APIs", "Bases de données", "Full-stack", "Git"],
     wide: false,
   },
   {
@@ -33,6 +36,7 @@ const skills = [
     title: "Designer",
     description:
       "Je conçois des systèmes visuels et des identités de marque avec un soin particulier pour la typographie, les couleurs et les détails.",
+    tags: ["Design visuel", "Identité de marque", "Typographie", "Figma"],
     wide: false,
   },
   {
@@ -41,6 +45,7 @@ const skills = [
     title: "UI / UX",
     description:
       "Je dessine des interfaces intuitives et des parcours utilisateurs qui paraissent fluides et pensés pour l'humain.",
+    tags: ["Wireframing", "Prototypage", "Design system", "Accessibilité"],
     wide: false,
   },
 ];
@@ -86,7 +91,17 @@ const SkillsSection = () => {
                   <p className="text-white/40 text-xs tracking-widest uppercase">{s.tag}</p>
                 </div>
                 <h3 className="text-white text-xl md:text-2xl mb-3 tracking-tight">{s.title}</h3>
-                <p className="text-white/50 text-sm leading-relaxed">{s.description}</p>
+                <p className="text-white/50 text-sm leading-relaxed mb-5">{s.description}</p>
+                <div className="flex flex-wrap gap-2">
+                  {s.tags.map((t) => (
+                    <span
+                      key={t}
+                      className="border border-white/20 rounded-full px-3 py-1 text-white/70 text-xs tracking-wide"
+                    >
+                      {t}
+                    </span>
+                  ))}
+                </div>
               </motion.div>
             );
           })}
