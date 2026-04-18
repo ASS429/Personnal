@@ -1,3 +1,23 @@
+const handleDownload = () => {
+  const existing = document.getElementById("html2pdf-script");
+  const run = () => {
+    const element = document.querySelector(".cv-page") as HTMLElement;
+    (window as any).html2pdf().set({
+      margin: 0,
+      filename: "CV-Arfang-Souleymane-Sane.pdf",
+      image: { type: "jpeg", quality: 0.98 },
+      html2canvas: { scale: 2, useCORS: true },
+      jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
+    }).from(element).save();
+  };
+  if (existing) { run(); return; }
+  const script = document.createElement("script");
+  script.id = "html2pdf-script";
+  script.src = "https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js";
+  script.onload = run;
+  document.head.appendChild(script);
+};
+
 const CV = () => {
   return (
     <>
@@ -132,7 +152,7 @@ const CV = () => {
         .print-btn:hover { background: #333; }
       `}</style>
 
-      <button className="print-btn no-print" onClick={() => window.print()}>
+      <button className="print-btn no-print" onClick={handleDownload}>
         Télécharger en PDF
       </button>
 
