@@ -1,21 +1,15 @@
 import { motion, useInView } from "framer-motion";
 import { useRef } from "react";
-import { Palette, Layout, Code2, Server } from "lucide-react";
+import { Palette, Layout, Code2, Server, Briefcase } from "lucide-react";
 
 const skills = [
   {
-    icon: Palette,
-    tag: "Créatif",
-    title: "Designer",
+    icon: Briefcase,
+    tag: "Gestion",
+    title: "Management & Gestion",
     description:
-      "Je conçois des systèmes visuels et des identités de marque avec un soin particulier pour la typographie, les couleurs et les détails.",
-  },
-  {
-    icon: Layout,
-    tag: "Produit",
-    title: "UI / UX",
-    description:
-      "Je dessine des interfaces intuitives et des parcours utilisateurs qui paraissent fluides et pensés pour l'humain.",
+      "Formé en comptabilité, économie, finance d'entreprise et management de projet — j'analyse, planifie et pilote des initiatives de bout en bout avec une vision orientée résultats.",
+    wide: true,
   },
   {
     icon: Code2,
@@ -23,6 +17,7 @@ const skills = [
     title: "Développement Frontend",
     description:
       "Je construis des expériences web responsives, accessibles et performantes avec des frameworks modernes.",
+    wide: false,
   },
   {
     icon: Server,
@@ -30,6 +25,23 @@ const skills = [
     title: "Développement Backend",
     description:
       "Je conçois des APIs, des bases de données et de la logique serveur pour alimenter des applications full-stack fiables.",
+    wide: false,
+  },
+  {
+    icon: Palette,
+    tag: "Créatif",
+    title: "Designer",
+    description:
+      "Je conçois des systèmes visuels et des identités de marque avec un soin particulier pour la typographie, les couleurs et les détails.",
+    wide: false,
+  },
+  {
+    icon: Layout,
+    tag: "Produit",
+    title: "UI / UX",
+    description:
+      "Je dessine des interfaces intuitives et des parcours utilisateurs qui paraissent fluides et pensés pour l'humain.",
+    wide: false,
   },
 ];
 
@@ -65,7 +77,7 @@ const SkillsSection = () => {
                 initial={{ opacity: 0, y: 40 }}
                 animate={inView ? { opacity: 1, y: 0 } : {}}
                 transition={{ duration: 0.7, delay: 0.1 * (i + 1) }}
-                className="liquid-glass rounded-3xl p-8 md:p-10"
+                className={`liquid-glass rounded-3xl p-8 md:p-10${s.wide ? " md:col-span-2" : ""}`}
               >
                 <div className="flex items-start justify-between mb-6">
                   <div className="liquid-glass rounded-2xl p-3">
