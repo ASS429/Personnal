@@ -141,23 +141,13 @@ const Index = () => {
             {/* CV — split button: view + download */}
             <div className="liquid-glass rounded-full flex items-center overflow-hidden">
               <a
-                href="/cv-arfang-sane.pdf"
+                href="/cv"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="pl-5 pr-4 py-3 text-white text-sm font-medium flex items-center gap-2 hover:bg-white/5 transition-colors"
                 aria-label="Voir le CV"
               >
                 <FileText size={16} /> Voir mon CV
-              </a>
-              <div className="w-px h-5 bg-white/20" />
-              <a
-                href="/cv-arfang-sane.pdf"
-                download="CV-Arfang-Souleymane-Sane.pdf"
-                className="px-4 py-3 text-white hover:bg-white/5 transition-colors"
-                aria-label="Télécharger le CV"
-                title="Télécharger"
-              >
-                <Download size={16} />
               </a>
             </div>
 
