@@ -1,5 +1,7 @@
 "use client";
 
+import arfangPortrait from "./assets/arfang-portrait.jpeg";
+
 const handleDownload = async () => {
   const loadHtml2Pdf = () =>
     new Promise<void>((resolve, reject) => {
@@ -180,18 +182,24 @@ const CV = () => {
         }
 
         .avatar {
-          width: 26mm;
-          height: 26mm;
+          width: 30mm;
+          height: 30mm;
           border-radius: 50%;
-          display: grid;
-          place-items: center;
+          overflow: hidden;
           background: rgba(255, 255, 255, 0.12);
-          border: 1.2px solid rgba(255, 255, 255, 0.35);
-          box-shadow: 0 12px 28px rgba(0, 0, 0, 0.22);
-          font-size: 23pt;
-          font-weight: 800;
-          letter-spacing: -0.07em;
-          margin-bottom: 8mm;
+          border: 1.4px solid rgba(255, 255, 255, 0.52);
+          box-shadow: 0 13px 30px rgba(0, 0, 0, 0.25);
+          margin-bottom: 7mm;
+          padding: 1mm;
+        }
+
+        .avatar img {
+          width: 100%;
+          height: 100%;
+          display: block;
+          object-fit: cover;
+          object-position: center;
+          border-radius: 50%;
         }
 
         .side-section { margin-bottom: 8mm; }
@@ -436,7 +444,9 @@ const CV = () => {
 
       <div className="cv-page">
         <aside className="sidebar">
-          <div className="avatar">AS</div>
+          <div className="avatar">
+            <img src={arfangPortrait} alt="Portrait de Arfang Souleymane Sané" />
+          </div>
 
           <div className="side-section">
             <div className="side-title">Contact</div>
