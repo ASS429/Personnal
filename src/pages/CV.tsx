@@ -1,6 +1,6 @@
 "use client";
 
-import arfangPortrait from "./assets/arfang-portrait.jpeg";
+import arfangPortrait from "../assets/arfang-portrait.jpeg";
 
 const handleDownload = async () => {
   const loadHtml2Pdf = () =>
