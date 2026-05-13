@@ -142,7 +142,7 @@ const handleDownload = async () => {
   } catch (error) {
     console.error("Erreur lors du téléchargement du PDF :", error);
     alert(
-      "Le PDF n'a pas pu être généré. Vérifie ta connexion internet puis réessaie. Si le problème continue, installe html2pdf.js localement."
+      "Le PDF n'a pas pu être généré. Une image ou un style CSS n'est pas compatible avec html2canvas. Cette version corrigée supprime les styles non compatibles."
     );
   } finally {
     exportHost.remove();
@@ -180,8 +180,6 @@ const CV = () => {
   return (
     <>
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
-
         @page { size: A4; margin: 0; }
         * { box-sizing: border-box; margin: 0; padding: 0; }
         html, body { margin: 0; padding: 0; }
@@ -198,7 +196,7 @@ const CV = () => {
           margin: 0 auto;
           background: #ffffff;
           color: #172033;
-          font-family: 'Inter', Arial, sans-serif;
+          font-family: Arial, Helvetica, sans-serif;
           display: grid;
           grid-template-columns: 67mm 1fr;
           line-height: 1.38;
@@ -243,9 +241,7 @@ const CV = () => {
         .sidebar {
           position: relative;
           color: #f8fafc;
-          background:
-            radial-gradient(circle at 18% 8%, rgba(56, 189, 248, 0.28), transparent 30%),
-            linear-gradient(180deg, #0f172a 0%, #12314f 52%, #0b1220 100%);
+          background: #0f172a;
           padding: 10mm 7mm 9mm 7mm;
         }
 
@@ -256,7 +252,7 @@ const CV = () => {
           top: 0;
           bottom: 0;
           width: 1.4mm;
-          background: linear-gradient(180deg, #38bdf8, #22c55e, #f59e0b);
+          background: #38bdf8;
         }
 
         .avatar {
@@ -351,9 +347,7 @@ const CV = () => {
         /* ===== MAIN ===== */
         .main {
           padding: 10mm 11mm 8.7mm 9mm;
-          background:
-            linear-gradient(90deg, rgba(14, 165, 233, 0.06), transparent 28%),
-            #ffffff;
+          background: #ffffff;
         }
 
         .header { margin-bottom: 6mm; }
@@ -403,7 +397,7 @@ const CV = () => {
           width: 4.5mm;
           height: 4.5mm;
           border-radius: 50%;
-          background: linear-gradient(135deg, #0ea5e9, #22c55e);
+          background: #0ea5e9;
           box-shadow: 0 0 0 1.1mm #e0f2fe;
           flex: 0 0 auto;
         }
@@ -458,7 +452,7 @@ const CV = () => {
           border: 0.65px solid #dbe4ef;
           border-radius: 4mm;
           padding: 2.7mm 3.1mm;
-          background: linear-gradient(180deg, #ffffff, #f8fafc);
+          background: #ffffff;
           box-shadow: 0 4px 13px rgba(15, 23, 42, 0.045);
         }
         .project-head {
@@ -505,10 +499,10 @@ const CV = () => {
           cursor: pointer;
           z-index: 1000;
           color: #ffffff;
-          background: linear-gradient(135deg, #0f172a, #0369a1);
+          background: #0f172a;
           border-radius: 999px;
           padding: 12px 23px;
-          font-family: 'Inter', Arial, sans-serif;
+          font-family: Arial, Helvetica, sans-serif;
           font-size: 13px;
           font-weight: 800;
           box-shadow: 0 14px 34px rgba(15, 23, 42, 0.28);
