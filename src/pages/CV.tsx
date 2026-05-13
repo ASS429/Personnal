@@ -1,155 +1,433 @@
-const handleDownload = () => {
-  const existing = document.getElementById("html2pdf-script");
-  const run = () => {
-    const element = document.querySelector(".cv-page") as HTMLElement;
-    (window as any).html2pdf().set({
-      margin: 0,
-      filename: "CV-Arfang-Souleymane-Sane.pdf",
-      image: { type: "jpeg", quality: 0.98 },
-      html2canvas: { scale: 2, useCORS: true },
-      jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
-    }).from(element).save();
-  };
-  if (existing) { run(); return; }
-  const script = document.createElement("script");
-  script.id = "html2pdf-script";
-  script.src = "https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js";
-  script.onload = run;
-  document.head.appendChild(script);
+"use client";
+
+const handleDownload = async () => {
+  const loadHtml2Pdf = () =>
+    new Promise<void>((resolve, reject) => {
+      if ((window as any).html2pdf) {
+        resolve();
+        return;
+      }
+
+      const existing = document.getElementById("html2pdf-script") as HTMLScriptElement | null;
+      if (existing) {
+        existing.addEventListener("load", () => resolve(), { once: true });
+        existing.addEventListener("error", () => reject(new Error("Impossible de charger html2pdf.")), { once: true });
+        return;
+      }
+
+      const script = document.createElement("script");
+      script.id = "html2pdf-script";
+      script.src = "https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js";
+      script.onload = () => resolve();
+      script.onerror = () => reject(new Error("Impossible de charger html2pdf."));
+      document.head.appendChild(script);
+    });
+
+  const source = document.querySelector(".cv-page") as HTMLElement | null;
+  if (!source) return;
+
+  await loadHtml2Pdf();
+
+  const exportHost = document.createElement("div");
+  exportHost.className = "pdf-export-host";
+  exportHost.setAttribute("aria-hidden", "true");
+
+  const exportElement = source.cloneNode(true) as HTMLElement;
+  exportElement.classList.add("cv-export");
+  exportHost.appendChild(exportElement);
+  document.body.appendChild(exportHost);
+
+  try {
+    await (document as any).fonts?.ready;
+    await new Promise((resolve) => setTimeout(resolve, 250));
+
+    await (window as any)
+      .html2pdf()
+      .set({
+        margin: 0,
+        filename: "CV-Arfang-Souleymane-Sane.pdf",
+        image: { type: "jpeg", quality: 1 },
+        html2canvas: {
+          scale: 3,
+          useCORS: true,
+          allowTaint: true,
+          backgroundColor: "#ffffff",
+          windowWidth: 794,
+          windowHeight: 1123,
+          scrollX: 0,
+          scrollY: 0,
+        },
+        jsPDF: {
+          unit: "mm",
+          format: "a4",
+          orientation: "portrait",
+          compress: true,
+          precision: 16,
+        },
+        pagebreak: { mode: ["avoid-all", "css", "legacy"] },
+      })
+      .from(exportElement)
+      .save();
+  } finally {
+    exportHost.remove();
+  }
 };
 
 const CV = () => {
+  const managementSkills = [
+    "Comptabilité",
+    "Économie",
+    "Finance d'entreprise",
+    "Gestion d'entreprise",
+    "Management de projet",
+  ];
+
+  const devSkills = [
+    "React",
+    "TypeScript",
+    "Tailwind CSS",
+    "Node.js",
+    "REST APIs",
+    "Bases de données",
+    "PWA",
+    "Git",
+  ];
+
+  const designSkills = ["UI / UX", "Figma", "Design visuel", "Identité de marque", "Typographie"];
+
+  const interests = ["Codage", "Études", "Sport", "Découvertes", "Entrepreneuriat"];
+
   return (
     <>
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 
+        @page { size: A4; margin: 0; }
         * { box-sizing: border-box; margin: 0; padding: 0; }
-
-        body { background: #f5f5f5; }
-
-        .cv-page {
-          font-family: 'Inter', sans-serif;
-          font-size: 10pt;
-          color: #1a1a1a;
-          background: #fff;
-          width: 210mm;
-          min-height: 297mm;
-          margin: 0 auto;
-          padding: 18mm 18mm 16mm 18mm;
-          line-height: 1.5;
+        html, body { margin: 0; padding: 0; }
+        body {
+          background: #e9edf3;
+          -webkit-print-color-adjust: exact;
+          print-color-adjust: exact;
         }
 
-        @media print {
-          body { background: #fff; }
-          .cv-page { margin: 0; padding: 15mm 16mm 14mm 16mm; box-shadow: none; }
-          .no-print { display: none !important; }
+        .cv-page {
+          width: 210mm;
+          height: 297mm;
+          overflow: hidden;
+          margin: 0 auto;
+          background: #ffffff;
+          color: #172033;
+          font-family: 'Inter', Arial, sans-serif;
+          display: grid;
+          grid-template-columns: 67mm 1fr;
+          line-height: 1.38;
         }
 
         @media screen {
-          .cv-page { box-shadow: 0 4px 32px rgba(0,0,0,0.12); margin: 32px auto; }
+          .cv-page {
+            margin: 30px auto;
+            box-shadow: 0 24px 70px rgba(15, 23, 42, 0.22);
+          }
         }
 
-        /* Header */
-        .cv-name {
-          font-size: 28pt;
-          font-weight: 700;
-          letter-spacing: -0.5px;
-          line-height: 1.1;
-          margin-bottom: 4px;
+        @media print {
+          body { background: #ffffff; }
+          .cv-page { margin: 0; box-shadow: none; }
+          .no-print { display: none !important; }
         }
-        .cv-title {
-          font-size: 9pt;
-          font-weight: 600;
-          letter-spacing: 0.15em;
+
+        .pdf-export-host {
+          position: fixed;
+          left: 0;
+          top: 0;
+          width: 210mm;
+          height: 297mm;
+          overflow: hidden;
+          background: #ffffff;
+          z-index: 999999;
+          pointer-events: none;
+        }
+
+        .cv-page.cv-export {
+          margin: 0 !important;
+          box-shadow: none !important;
+          width: 210mm !important;
+          height: 297mm !important;
+          min-height: 297mm !important;
+          transform: none !important;
+          overflow: hidden !important;
+        }
+
+        /* ===== SIDEBAR ===== */
+        .sidebar {
+          position: relative;
+          color: #f8fafc;
+          background:
+            radial-gradient(circle at 18% 8%, rgba(56, 189, 248, 0.28), transparent 30%),
+            linear-gradient(180deg, #0f172a 0%, #12314f 52%, #0b1220 100%);
+          padding: 10mm 7mm 9mm 7mm;
+        }
+
+        .sidebar::after {
+          content: "";
+          position: absolute;
+          right: 0;
+          top: 0;
+          bottom: 0;
+          width: 1.4mm;
+          background: linear-gradient(180deg, #38bdf8, #22c55e, #f59e0b);
+        }
+
+        .avatar {
+          width: 26mm;
+          height: 26mm;
+          border-radius: 50%;
+          display: grid;
+          place-items: center;
+          background: rgba(255, 255, 255, 0.12);
+          border: 1.2px solid rgba(255, 255, 255, 0.35);
+          box-shadow: 0 12px 28px rgba(0, 0, 0, 0.22);
+          font-size: 23pt;
+          font-weight: 800;
+          letter-spacing: -0.07em;
+          margin-bottom: 8mm;
+        }
+
+        .side-section { margin-bottom: 8mm; }
+        .side-section:last-child { margin-bottom: 0; }
+
+        .side-title {
+          color: #bfdbfe;
+          font-size: 7.6pt;
+          font-weight: 800;
           text-transform: uppercase;
-          color: #555;
-          margin-bottom: 10px;
-        }
-        .cv-contact {
-          font-size: 9pt;
-          color: #444;
-          display: flex;
-          flex-wrap: wrap;
-          gap: 4px 12px;
-          margin-bottom: 2px;
-        }
-        .cv-contact a { color: #444; text-decoration: none; }
-        .cv-divider {
-          border: none;
-          border-top: 1.5px solid #1a1a1a;
-          margin: 12px 0 16px 0;
+          letter-spacing: 0.14em;
+          margin-bottom: 4mm;
         }
 
-        /* Sections */
-        .cv-section { margin-bottom: 18px; }
-        .cv-section-title {
-          font-size: 9.5pt;
+        .contact-list { display: grid; gap: 2.7mm; }
+        .contact-item {
+          display: grid;
+          grid-template-columns: 5mm 1fr;
+          gap: 2.4mm;
+          align-items: start;
+          font-size: 8.05pt;
+          color: rgba(248, 250, 252, 0.88);
+          line-height: 1.3;
+          word-break: break-word;
+        }
+        .contact-icon {
+          width: 5mm;
+          height: 5mm;
+          border-radius: 50%;
+          display: grid;
+          place-items: center;
+          background: rgba(255, 255, 255, 0.14);
+          color: #e0f2fe;
+          font-size: 6.7pt;
+          font-weight: 800;
+        }
+        .contact-item a { color: rgba(248, 250, 252, 0.92); text-decoration: none; }
+
+        .skill-group { margin-bottom: 5mm; }
+        .skill-group:last-child { margin-bottom: 0; }
+        .skill-heading {
+          color: #ffffff;
+          font-size: 8.25pt;
           font-weight: 700;
-          letter-spacing: 0.05em;
-          text-transform: uppercase;
-          border-bottom: 1px solid #ddd;
-          padding-bottom: 4px;
-          margin-bottom: 12px;
+          margin-bottom: 2mm;
         }
-
-        /* Formation */
-        .cv-edu-item { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 6px; }
-        .cv-edu-item-left {}
-        .cv-edu-degree { font-weight: 600; font-size: 10pt; }
-        .cv-edu-school { font-size: 9pt; color: #555; }
-        .cv-edu-date { font-size: 9pt; color: #777; font-style: italic; white-space: nowrap; }
-
-        /* Compétences */
-        .cv-skills-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px 16px; }
-        .cv-skills-col-title { font-weight: 600; font-size: 9.5pt; margin-bottom: 6px; }
-        .cv-tags { display: flex; flex-wrap: wrap; gap: 4px; }
-        .cv-tag {
-          border: 1px solid #ccc;
+        .side-tags { display: flex; flex-wrap: wrap; gap: 1.6mm; }
+        .side-tag {
+          font-size: 7.15pt;
+          color: rgba(248, 250, 252, 0.92);
+          border: 0.6px solid rgba(255, 255, 255, 0.24);
+          background: rgba(255, 255, 255, 0.08);
           border-radius: 99px;
-          padding: 1px 8px;
-          font-size: 8.5pt;
-          color: #333;
+          padding: 0.7mm 2.1mm;
           white-space: nowrap;
         }
 
-        /* Projets */
-        .cv-project { margin-bottom: 10px; }
-        .cv-project-header { display: flex; justify-content: space-between; align-items: baseline; }
-        .cv-project-title { font-weight: 600; font-size: 10pt; }
-        .cv-project-type { font-size: 9pt; color: #777; font-style: italic; }
-        .cv-project-desc { font-size: 9pt; color: #444; margin-top: 2px; }
-        .cv-project-link { color: #555; font-size: 8.5pt; }
+        .language-list { display: grid; gap: 2mm; }
+        .language-item {
+          display: flex;
+          justify-content: space-between;
+          gap: 3mm;
+          font-size: 8.05pt;
+          color: rgba(248, 250, 252, 0.9);
+        }
+        .language-item strong { color: #ffffff; font-weight: 700; }
+        .language-item span { color: #cbd5e1; }
 
-        /* Profil / Expérience */
-        .cv-text { font-size: 9.5pt; color: #333; line-height: 1.6; text-align: justify; }
+        .interest-list { display: flex; flex-wrap: wrap; gap: 1.7mm; }
 
-        /* Langues */
-        .cv-langs { display: flex; gap: 20px; flex-wrap: wrap; }
-        .cv-lang { font-size: 9.5pt; }
-        .cv-lang strong { font-weight: 600; }
+        /* ===== MAIN ===== */
+        .main {
+          padding: 10mm 11mm 8.7mm 9mm;
+          background:
+            linear-gradient(90deg, rgba(14, 165, 233, 0.06), transparent 28%),
+            #ffffff;
+        }
 
-        /* Intérêts */
-        .cv-interests { display: flex; gap: 6px; flex-wrap: wrap; }
+        .header { margin-bottom: 6mm; }
+        .name {
+          font-size: 25.5pt;
+          line-height: 0.98;
+          font-weight: 800;
+          letter-spacing: -0.9px;
+          color: #0f172a;
+          max-width: 122mm;
+        }
+        .title {
+          margin-top: 2.5mm;
+          font-size: 8.4pt;
+          font-weight: 800;
+          color: #0369a1;
+          text-transform: uppercase;
+          letter-spacing: 0.12em;
+        }
+        .headline {
+          margin-top: 3.2mm;
+          padding: 3.1mm 4mm;
+          border-left: 1.1mm solid #0ea5e9;
+          border-radius: 0 4mm 4mm 0;
+          background: #eff6ff;
+          color: #1e3a5f;
+          font-size: 8.6pt;
+          line-height: 1.42;
+          font-weight: 500;
+        }
 
-        /* Print button */
+        .section { margin-bottom: 5.4mm; }
+        .section.compact { margin-bottom: 4.7mm; }
+        .section-title {
+          display: flex;
+          align-items: center;
+          gap: 2.3mm;
+          color: #0f172a;
+          font-size: 8.65pt;
+          font-weight: 800;
+          text-transform: uppercase;
+          letter-spacing: 0.09em;
+          margin-bottom: 3mm;
+        }
+        .section-title::before {
+          content: "";
+          width: 4.5mm;
+          height: 4.5mm;
+          border-radius: 50%;
+          background: linear-gradient(135deg, #0ea5e9, #22c55e);
+          box-shadow: 0 0 0 1.1mm #e0f2fe;
+          flex: 0 0 auto;
+        }
+        .section-title::after {
+          content: "";
+          height: 0.6px;
+          background: #dbe4ef;
+          flex: 1;
+        }
+
+        .text {
+          font-size: 8.55pt;
+          color: #334155;
+          line-height: 1.49;
+          text-align: justify;
+        }
+
+        .education-list { display: grid; gap: 2.6mm; }
+        .edu-item {
+          display: grid;
+          grid-template-columns: 1fr auto;
+          gap: 5mm;
+          align-items: baseline;
+          padding-bottom: 2.5mm;
+          border-bottom: 0.6px solid #e2e8f0;
+        }
+        .edu-item:last-child { border-bottom: none; padding-bottom: 0; }
+        .edu-degree {
+          color: #0f172a;
+          font-size: 8.85pt;
+          font-weight: 800;
+          line-height: 1.25;
+        }
+        .edu-school {
+          color: #64748b;
+          font-size: 7.9pt;
+          margin-top: 0.7mm;
+        }
+        .edu-date {
+          color: #0369a1;
+          background: #e0f2fe;
+          border: 0.6px solid #bae6fd;
+          border-radius: 99px;
+          padding: 0.7mm 2.4mm;
+          font-size: 7.35pt;
+          font-weight: 700;
+          white-space: nowrap;
+        }
+
+        .projects { display: grid; gap: 2.5mm; }
+        .project {
+          border: 0.65px solid #dbe4ef;
+          border-radius: 4mm;
+          padding: 2.7mm 3.1mm;
+          background: linear-gradient(180deg, #ffffff, #f8fafc);
+          box-shadow: 0 4px 13px rgba(15, 23, 42, 0.045);
+        }
+        .project-head {
+          display: flex;
+          align-items: baseline;
+          justify-content: space-between;
+          gap: 4mm;
+          margin-bottom: 1mm;
+        }
+        .project-title {
+          color: #0f172a;
+          font-size: 8.55pt;
+          font-weight: 800;
+        }
+        .project-type {
+          color: #0284c7;
+          font-size: 7.35pt;
+          font-weight: 700;
+          white-space: nowrap;
+        }
+        .project-desc {
+          color: #475569;
+          font-size: 7.85pt;
+          line-height: 1.39;
+        }
+        .project-link {
+          color: #0f766e;
+          font-weight: 700;
+          word-break: break-word;
+        }
+
+        .experience-box {
+          border-left: 1mm solid #22c55e;
+          background: #f0fdf4;
+          border-radius: 0 3.8mm 3.8mm 0;
+          padding: 2.7mm 3.5mm;
+        }
+
         .print-btn {
           position: fixed;
-          bottom: 28px;
-          right: 28px;
-          background: #1a1a1a;
-          color: #fff;
+          right: 26px;
+          bottom: 26px;
           border: none;
-          border-radius: 99px;
-          padding: 12px 24px;
-          font-size: 13px;
-          font-weight: 600;
           cursor: pointer;
-          box-shadow: 0 4px 16px rgba(0,0,0,0.2);
-          z-index: 100;
-          font-family: 'Inter', sans-serif;
+          z-index: 1000;
+          color: #ffffff;
+          background: linear-gradient(135deg, #0f172a, #0369a1);
+          border-radius: 999px;
+          padding: 12px 23px;
+          font-family: 'Inter', Arial, sans-serif;
+          font-size: 13px;
+          font-weight: 800;
+          box-shadow: 0 14px 34px rgba(15, 23, 42, 0.28);
         }
-        .print-btn:hover { background: #333; }
+        .print-btn:hover { filter: brightness(1.08); }
       `}</style>
 
       <button className="print-btn no-print" onClick={handleDownload}>
@@ -157,173 +435,158 @@ const CV = () => {
       </button>
 
       <div className="cv-page">
-        {/* Header */}
-        <div className="cv-name">Arfang Souleymane Sané</div>
-        <div className="cv-title">Développeur Full-Stack · Gestionnaire · Designer</div>
-        <div className="cv-contact">
-          <span>Mbour / Saint-Louis, Sénégal</span>
-          <a href="mailto:sanarfang429@gmail.com">sanarfang429@gmail.com</a>
-          <span>+221 78 157 10 09</span>
-          <a href="https://wa.me/221781571009" target="_blank" rel="noreferrer">wa.me/221781571009</a>
-        </div>
-        <hr className="cv-divider" />
+        <aside className="sidebar">
+          <div className="avatar">AS</div>
 
-        {/* Profil */}
-        <div className="cv-section">
-          <div className="cv-section-title">Profil</div>
-          <p className="cv-text">
-            Étudiant sénégalais en Master MIAGE (Méthodes Informatiques Appliquées à la Gestion des Entreprises)
-            à l'Université Gaston Berger de Saint-Louis, passionné par la technologie, l'innovation et
-            l'entrepreneuriat. Formé en comptabilité, économie, finance d'entreprise et management de projet,
-            je pilote des initiatives de bout en bout — de l'analyse des besoins au déploiement. Je conçois et
-            développe des applications numériques pour faciliter la gestion des entreprises et des petites activités
-            commerciales. Créatif et ambitieux, je mène également des projets entrepreneuriaux, notamment dans
-            l'agriculture et les services numériques.
-          </p>
-        </div>
-
-        {/* Formation */}
-        <div className="cv-section">
-          <div className="cv-section-title">Formation</div>
-
-          <div className="cv-edu-item">
-            <div className="cv-edu-item-left">
-              <div className="cv-edu-degree">Master 2 — MIAGE</div>
-              <div className="cv-edu-school">Université Gaston Berger, Saint-Louis</div>
+          <div className="side-section">
+            <div className="side-title">Contact</div>
+            <div className="contact-list">
+              <div className="contact-item"><span className="contact-icon">L</span><span>Mbour / Saint-Louis, Sénégal</span></div>
+              <div className="contact-item"><span className="contact-icon">M</span><a href="mailto:sanarfang429@gmail.com">sanarfang429@gmail.com</a></div>
+              <div className="contact-item"><span className="contact-icon">T</span><span>+221 78 157 10 09</span></div>
+              <div className="contact-item"><span className="contact-icon">W</span><a href="https://wa.me/221781571009" target="_blank" rel="noreferrer">wa.me/221781571009</a></div>
             </div>
-            <div className="cv-edu-date">En cours</div>
           </div>
 
-          <div className="cv-edu-item">
-            <div className="cv-edu-item-left">
-              <div className="cv-edu-degree">Licence — MIAGE</div>
-              <div className="cv-edu-school">Université Gaston Berger, Saint-Louis</div>
-            </div>
-            <div className="cv-edu-date">2023 — 2024</div>
-          </div>
+          <div className="side-section">
+            <div className="side-title">Compétences clés</div>
 
-          <div className="cv-edu-item">
-            <div className="cv-edu-degree">Baccalauréat Scientifique</div>
-            <div className="cv-edu-date">2015 — 2020</div>
-          </div>
-          <div className="cv-edu-school" style={{ marginBottom: 6, marginTop: -4 }}>Lycée Demba Diop, Mbour</div>
-
-          <div className="cv-edu-item">
-            <div className="cv-edu-degree">BFEM — Brevet de Fin d'Études Moyennes</div>
-            <div className="cv-edu-date">2011 — 2015</div>
-          </div>
-          <div className="cv-edu-school" style={{ marginTop: -4 }}>CES 2 Mbour</div>
-        </div>
-
-        {/* Compétences */}
-        <div className="cv-section">
-          <div className="cv-section-title">Compétences</div>
-          <div className="cv-skills-grid">
-            <div>
-              <div className="cv-skills-col-title">Gestion & Management</div>
-              <div className="cv-tags">
-                <span className="cv-tag">Comptabilité</span>
-                <span className="cv-tag">Économie</span>
-                <span className="cv-tag">Finance d'entreprise</span>
-                <span className="cv-tag">Management de projet</span>
-                <span className="cv-tag">Gestion d'entreprise</span>
+            <div className="skill-group">
+              <div className="skill-heading">Gestion & Management</div>
+              <div className="side-tags">
+                {managementSkills.map((skill) => <span key={skill} className="side-tag">{skill}</span>)}
               </div>
             </div>
-            <div>
-              <div className="cv-skills-col-title">Développement</div>
-              <div className="cv-tags">
-                <span className="cv-tag">PWA</span>
-                <span className="cv-tag">React</span>
-                <span className="cv-tag">TypeScript</span>
-                <span className="cv-tag">Tailwind CSS</span>
-                <span className="cv-tag">Node.js</span>
-                <span className="cv-tag">REST APIs</span>
-                <span className="cv-tag">Bases de données</span>
-                <span className="cv-tag">Full-stack</span>
-                <span className="cv-tag">Git</span>
+
+            <div className="skill-group">
+              <div className="skill-heading">Développement</div>
+              <div className="side-tags">
+                {devSkills.map((skill) => <span key={skill} className="side-tag">{skill}</span>)}
               </div>
             </div>
-            <div>
-              <div className="cv-skills-col-title">Design & Produit</div>
-              <div className="cv-tags">
-                <span className="cv-tag">Design visuel</span>
-                <span className="cv-tag">Identité de marque</span>
-                <span className="cv-tag">UI / UX</span>
-                <span className="cv-tag">Typographie</span>
-                <span className="cv-tag">Figma</span>
+
+            <div className="skill-group">
+              <div className="skill-heading">Design & Produit</div>
+              <div className="side-tags">
+                {designSkills.map((skill) => <span key={skill} className="side-tag">{skill}</span>)}
               </div>
             </div>
           </div>
-        </div>
 
-        {/* Projets */}
-        <div className="cv-section">
-          <div className="cv-section-title">Projets</div>
-
-          <div className="cv-project">
-            <div className="cv-project-header">
-              <span className="cv-project-title">SamaCommerce — Gestion commerciale</span>
-              <span className="cv-project-type">Projet personnel</span>
+          <div className="side-section">
+            <div className="side-title">Langues</div>
+            <div className="language-list">
+              <div className="language-item"><strong>Français</strong><span>Excellent</span></div>
+              <div className="language-item"><strong>Anglais</strong><span>Excellent</span></div>
+              <div className="language-item"><strong>Wolof</strong><span>Excellent</span></div>
             </div>
-            <p className="cv-project-desc">
-              Application qui simplifie la gestion pour les commerçants : stocks, ventes et suivi clients réunis en un seul endroit.{" "}
-              <span className="cv-project-link">samacommerce-frontend-v2-1.onrender.com</span>
-            </p>
           </div>
 
-          <div className="cv-project">
-            <div className="cv-project-header">
-              <span className="cv-project-title">SamayTontines — Fintech</span>
-              <span className="cv-project-type">Projet personnel</span>
+          <div className="side-section">
+            <div className="side-title">Centres d'intérêt</div>
+            <div className="interest-list">
+              {interests.map((interest) => <span key={interest} className="side-tag">{interest}</span>)}
             </div>
-            <p className="cv-project-desc">
-              Application qui facilite la gestion des tontines (associations d'épargne et de crédit rotatives).{" "}
-              <span className="cv-project-link">matontine-frontend-1.onrender.com</span>
-            </p>
           </div>
+        </aside>
 
-          <div className="cv-project">
-            <div className="cv-project-header">
-              <span className="cv-project-title">Campus Crush — Social</span>
-              <span className="cv-project-type">Projet personnel</span>
+        <main className="main">
+          <header className="header">
+            <h1 className="name">Arfang Souleymane Sané</h1>
+            <div className="title">Développeur Full-Stack · Gestionnaire · Designer</div>
+            <div className="headline">
+              Profil hybride MIAGE : développement d'applications, gestion d'entreprise, finance, design produit et conduite de projets numériques.
             </div>
-            <p className="cv-project-desc">
-              Application de rencontres pensée pour les étudiants, pour aider les communautés universitaires à se connecter.{" "}
-              <span className="cv-project-link">campus-crush-h9df.onrender.com</span>
+          </header>
+
+          <section className="section compact">
+            <div className="section-title">Profil</div>
+            <p className="text">
+              Étudiant sénégalais en Master MIAGE à l'Université Gaston Berger de Saint-Louis, passionné par la technologie, l'innovation et l'entrepreneuriat. Formé en comptabilité, économie, finance d'entreprise et management de projet, je conçois des solutions numériques utiles aux entreprises et aux petites activités commerciales, de l'analyse des besoins au déploiement.
             </p>
-          </div>
-        </div>
+          </section>
 
-        {/* Expérience */}
-        <div className="cv-section">
-          <div className="cv-section-title">Expérience</div>
-          <p className="cv-text">
-            Pas encore d'expérience professionnelle formelle. J'ai mené plusieurs projets personnels
-            ambitieux et contribué à de nombreux projets académiques tout au long de mes études —
-            en livrant de vraies applications de la conception au déploiement, et en aiguisant
-            mon savoir-faire à chaque étape.
-          </p>
-        </div>
+          <section className="section compact">
+            <div className="section-title">Formation</div>
+            <div className="education-list">
+              <div className="edu-item">
+                <div>
+                  <div className="edu-degree">Master 2 — MIAGE</div>
+                  <div className="edu-school">Université Gaston Berger, Saint-Louis</div>
+                </div>
+                <div className="edu-date">En cours</div>
+              </div>
 
-        {/* Langues */}
-        <div className="cv-section">
-          <div className="cv-section-title">Langues</div>
-          <div className="cv-langs">
-            <span className="cv-lang"><strong>Français</strong> — Excellent</span>
-            <span className="cv-lang"><strong>Anglais</strong> — Excellent</span>
-            <span className="cv-lang"><strong>Wolof</strong> — Excellent</span>
-          </div>
-        </div>
+              <div className="edu-item">
+                <div>
+                  <div className="edu-degree">Licence — MIAGE</div>
+                  <div className="edu-school">Université Gaston Berger, Saint-Louis</div>
+                </div>
+                <div className="edu-date">2023 — 2024</div>
+              </div>
 
-        {/* Centres d'intérêt */}
-        <div className="cv-section">
-          <div className="cv-section-title">Centres d'intérêt</div>
-          <div className="cv-interests">
-            {["Codage", "Études", "Sport", "Découvertes"].map((i) => (
-              <span key={i} className="cv-tag">{i}</span>
-            ))}
-          </div>
-        </div>
+              <div className="edu-item">
+                <div>
+                  <div className="edu-degree">Baccalauréat Scientifique</div>
+                  <div className="edu-school">Lycée Demba Diop, Mbour</div>
+                </div>
+                <div className="edu-date">2015 — 2020</div>
+              </div>
+
+              <div className="edu-item">
+                <div>
+                  <div className="edu-degree">BFEM — Brevet de Fin d'Études Moyennes</div>
+                  <div className="edu-school">CES 2 Mbour</div>
+                </div>
+                <div className="edu-date">2011 — 2015</div>
+              </div>
+            </div>
+          </section>
+
+          <section className="section compact">
+            <div className="section-title">Projets numériques</div>
+            <div className="projects">
+              <article className="project">
+                <div className="project-head">
+                  <div className="project-title">SamaCommerce — Gestion commerciale</div>
+                  <div className="project-type">Projet personnel</div>
+                </div>
+                <p className="project-desc">
+                  Application de gestion pour commerçants : stocks, ventes et suivi clients réunis dans une interface simple. <span className="project-link">samacommerce-frontend-v2-1.onrender.com</span>
+                </p>
+              </article>
+
+              <article className="project">
+                <div className="project-head">
+                  <div className="project-title">SamayTontines — Fintech</div>
+                  <div className="project-type">Projet personnel</div>
+                </div>
+                <p className="project-desc">
+                  Solution facilitant la gestion des tontines, des cotisations et des associations d'épargne rotatives. <span className="project-link">matontine-frontend-1.onrender.com</span>
+                </p>
+              </article>
+
+              <article className="project">
+                <div className="project-head">
+                  <div className="project-title">Campus Crush — Social étudiant</div>
+                  <div className="project-type">Projet personnel</div>
+                </div>
+                <p className="project-desc">
+                  Application de rencontres pensée pour les étudiants et les communautés universitaires. <span className="project-link">campus-crush-h9df.onrender.com</span>
+                </p>
+              </article>
+            </div>
+          </section>
+
+          <section className="section">
+            <div className="section-title">Expérience</div>
+            <div className="experience-box">
+              <p className="text">
+                Pas encore d'expérience professionnelle formelle. Plusieurs projets personnels et académiques réalisés avec une approche complète : cadrage du besoin, conception, développement, tests, mise en ligne et amélioration continue.
+              </p>
+            </div>
+          </section>
+        </main>
       </div>
     </>
   );
