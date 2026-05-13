@@ -2,58 +2,123 @@
 
 import arfangPortrait from "../assets/arfang-portrait.jpeg";
 
-const handleDownload = async () => {
-  const loadHtml2Pdf = () =>
-    new Promise<void>((resolve, reject) => {
-      if ((window as any).html2pdf) {
-        resolve();
-        return;
-      }
+const loadHtml2Pdf = () =>
+  new Promise<void>((resolve, reject) => {
+    if ((window as any).html2pdf) {
+      resolve();
+      return;
+    }
 
-      const existing = document.getElementById("html2pdf-script") as HTMLScriptElement | null;
-      if (existing) {
-        existing.addEventListener("load", () => resolve(), { once: true });
-        existing.addEventListener("error", () => reject(new Error("Impossible de charger html2pdf.")), { once: true });
-        return;
-      }
+    const oldScript = document.getElementById("html2pdf-script");
+    if (oldScript) oldScript.remove();
 
+    const sources = [
+      "https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js",
+      "https://cdn.jsdelivr.net/npm/html2pdf.js@0.10.1/dist/html2pdf.bundle.min.js",
+    ];
+
+    let index = 0;
+
+    const addScript = () => {
       const script = document.createElement("script");
       script.id = "html2pdf-script";
-      script.src = "https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js";
-      script.onload = () => resolve();
-      script.onerror = () => reject(new Error("Impossible de charger html2pdf."));
+      script.src = sources[index];
+      script.async = true;
+
+      const timeout = window.setTimeout(() => {
+        script.remove();
+        index += 1;
+        if (index < sources.length) addScript();
+        else reject(new Error("Chargement de html2pdf impossible."));
+      }, 15000);
+
+      script.onload = () => {
+        window.clearTimeout(timeout);
+        if ((window as any).html2pdf) resolve();
+        else {
+          script.remove();
+          index += 1;
+          if (index < sources.length) addScript();
+          else reject(new Error("html2pdf est chargé mais indisponible."));
+        }
+      };
+
+      script.onerror = () => {
+        window.clearTimeout(timeout);
+        script.remove();
+        index += 1;
+        if (index < sources.length) addScript();
+        else reject(new Error("Impossible de charger html2pdf."));
+      };
+
       document.head.appendChild(script);
-    });
+    };
 
+    addScript();
+  });
+
+const waitForImages = async (root: HTMLElement) => {
+  const images = Array.from(root.querySelectorAll("img"));
+  await Promise.all(
+    images.map(
+      (img) =>
+        new Promise<void>((resolve) => {
+          if (img.complete) {
+            resolve();
+            return;
+          }
+          img.onload = () => resolve();
+          img.onerror = () => resolve();
+        })
+    )
+  );
+};
+
+const handleDownload = async () => {
   const source = document.querySelector(".cv-page") as HTMLElement | null;
-  if (!source) return;
+  if (!source) {
+    alert("Impossible de trouver le CV à exporter.");
+    return;
+  }
 
-  await loadHtml2Pdf();
+  const button = document.querySelector(".print-btn") as HTMLButtonElement | null;
+  const oldButtonText = button?.textContent || "Télécharger en PDF";
 
   const exportHost = document.createElement("div");
   exportHost.className = "pdf-export-host";
   exportHost.setAttribute("aria-hidden", "true");
 
-  const exportElement = source.cloneNode(true) as HTMLElement;
-  exportElement.classList.add("cv-export");
-  exportHost.appendChild(exportElement);
-  document.body.appendChild(exportHost);
-
   try {
-    await (document as any).fonts?.ready;
-    await new Promise((resolve) => setTimeout(resolve, 250));
+    if (button) {
+      button.disabled = true;
+      button.textContent = "Préparation du PDF...";
+    }
+
+    await loadHtml2Pdf();
+
+    const exportElement = source.cloneNode(true) as HTMLElement;
+    exportElement.classList.add("cv-export");
+    exportHost.appendChild(exportElement);
+    document.body.appendChild(exportHost);
+
+    if ((document as any).fonts?.ready) {
+      await (document as any).fonts.ready;
+    }
+    await waitForImages(exportElement);
+    await new Promise((resolve) => window.setTimeout(resolve, 350));
 
     await (window as any)
       .html2pdf()
       .set({
         margin: 0,
         filename: "CV-Arfang-Souleymane-Sane.pdf",
-        image: { type: "jpeg", quality: 1 },
+        image: { type: "jpeg", quality: 0.98 },
         html2canvas: {
-          scale: 3,
+          scale: 2,
           useCORS: true,
-          allowTaint: true,
+          allowTaint: false,
           backgroundColor: "#ffffff",
+          logging: false,
           windowWidth: 794,
           windowHeight: 1123,
           scrollX: 0,
@@ -64,14 +129,27 @@ const handleDownload = async () => {
           format: "a4",
           orientation: "portrait",
           compress: true,
-          precision: 16,
+          precision: 12,
         },
         pagebreak: { mode: ["avoid-all", "css", "legacy"] },
       })
       .from(exportElement)
-      .save();
+      .toPdf()
+      .get("pdf")
+      .then((pdf: any) => {
+        pdf.save("CV-Arfang-Souleymane-Sane.pdf");
+      });
+  } catch (error) {
+    console.error("Erreur lors du téléchargement du PDF :", error);
+    alert(
+      "Le PDF n'a pas pu être généré. Vérifie ta connexion internet puis réessaie. Si le problème continue, installe html2pdf.js localement."
+    );
   } finally {
     exportHost.remove();
+    if (button) {
+      button.disabled = false;
+      button.textContent = oldButtonText;
+    }
   }
 };
 
