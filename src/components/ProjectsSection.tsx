@@ -4,8 +4,26 @@ import { ArrowUpRight } from "lucide-react";
 import samacommerceIcon from "@/assets/samacommerce-icon.png";
 import samaytontinesIcon from "@/assets/samaytontines-icon.png";
 import campusCrushIcon from "@/assets/campus-crush-icon.png";
+import lartiskaIcon from "@/assets/lartiska.jpg";
+import maVillaIcon from "@/assets/ma_villa.jpg";
 
 const projects = [
+  {
+    tag: "Artisanat",
+    title: "Lartiska",
+    description:
+      "Plateforme dédiée aux finitions de luxe au Sénégal : peinture artistique, fresques murales, carrelage et résine époxy par un maître artisan.",
+    url: "https://lartiska.onrender.com/",
+    icon: lartiskaIcon,
+  },
+  {
+    tag: "Immobilier",
+    title: "Ma Villa",
+    description:
+      "Plateforme immobilière de luxe au Sénégal proposant des villas haut de gamme à la vente et à la location.",
+    url: "https://mavilla-web.onrender.com/",
+    icon: maVillaIcon,
+  },
   {
     tag: "Commerce",
     title: "SamaCommerce",
