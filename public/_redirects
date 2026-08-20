@@ -1,1 +1,7 @@
-/* /index.html 200
+# L'ancien CV statique a ete retire du depot, mais Render conserve un temps
+# les fichiers deja publies. Cette regle coupe court : le lien renvoie vers
+# la page CV, qui genere un PDF a jour.
+/cv-arfang-sane.pdf  /cv  301!
+
+# Repli SPA, en dernier : il attrape tout le reste.
+/*  /index.html  200
