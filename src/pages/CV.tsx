@@ -1,30 +1,52 @@
-"use client";
-
 import arfangPortrait from "../assets/arfang-portrait.jpeg";
 
-const loadHtml2Pdf = () => {
-  return new Promise<any>((resolve, reject) => {
-    if ((window as any).html2pdf) {
-      resolve((window as any).html2pdf);
+const HTML2PDF_SRC =
+  "https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js";
+
+type Html2PdfWorker = {
+  set(options: Record<string, unknown>): Html2PdfWorker;
+  from(element: HTMLElement): Html2PdfWorker;
+  save(): Promise<void>;
+};
+
+type Html2PdfFactory = () => Html2PdfWorker;
+
+declare global {
+  interface Window {
+    html2pdf?: Html2PdfFactory;
+  }
+}
+
+const loadHtml2Pdf = () =>
+  new Promise<Html2PdfFactory>((resolve, reject) => {
+    const settle = () => {
+      if (window.html2pdf) {
+        resolve(window.html2pdf);
+      } else {
+        reject(new Error("html2pdf.js s'est chargé sans s'exposer sur window."));
+      }
+    };
+
+    if (window.html2pdf) {
+      resolve(window.html2pdf);
       return;
     }
 
     const existing = document.getElementById("html2pdf-script") as HTMLScriptElement | null;
     if (existing) {
-      existing.addEventListener("load", () => resolve((window as any).html2pdf), { once: true });
+      existing.addEventListener("load", settle, { once: true });
       existing.addEventListener("error", reject, { once: true });
       return;
     }
 
     const script = document.createElement("script");
     script.id = "html2pdf-script";
-    script.src = "https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js";
+    script.src = HTML2PDF_SRC;
     script.async = true;
-    script.onload = () => resolve((window as any).html2pdf);
+    script.onload = settle;
     script.onerror = () => reject(new Error("Impossible de charger html2pdf.js"));
     document.head.appendChild(script);
   });
-};
 
 const waitForImages = async (root: HTMLElement) => {
   const images = Array.from(root.querySelectorAll("img"));
@@ -69,8 +91,8 @@ const handleDownload = async () => {
 
     const html2pdf = await loadHtml2Pdf();
 
-    if ((document as any).fonts?.ready) {
-      await (document as any).fonts.ready;
+    if (document.fonts?.ready) {
+      await document.fonts.ready;
     }
 
     await waitForImages(clone);
@@ -604,11 +626,21 @@ const CV = () => {
             <div className="projects">
               <article className="project">
                 <div className="project-head">
+                  <div className="project-title">Africa Connection Tours — Site & back-office</div>
+                  <div className="project-type">Projet client</div>
+                </div>
+                <p className="project-desc">
+                  Site multilingue et back-office d'un tour-opérateur dakarois actif depuis 1996 : circuits, excursions et devis sur-mesure. <span className="project-link">act-senegal.com</span>
+                </p>
+              </article>
+
+              <article className="project">
+                <div className="project-head">
                   <div className="project-title">SamaCommerce — Gestion commerciale</div>
                   <div className="project-type">Projet personnel</div>
                 </div>
                 <p className="project-desc">
-                  Application de gestion pour commerçants : stocks, ventes et suivi clients réunis dans une interface simple. <span className="project-link">samacommerce-frontend-v2-1.onrender.com</span>
+                  Application de gestion pour commerçants : stocks, ventes et suivi clients réunis dans une interface simple. <span className="project-link">samacommerce-web.onrender.com</span>
                 </p>
               </article>
 
@@ -618,7 +650,7 @@ const CV = () => {
                   <div className="project-type">Projet personnel</div>
                 </div>
                 <p className="project-desc">
-                  Solution facilitant la gestion des tontines, des cotisations et des associations d'épargne rotatives. <span className="project-link">matontine-frontend-1.onrender.com</span>
+                  Solution facilitant la gestion des tontines, des cotisations et des associations d'épargne rotatives. <span className="project-link">ma-tontine-frontend-1.onrender.com</span>
                 </p>
               </article>
 
@@ -628,7 +660,7 @@ const CV = () => {
                   <div className="project-type">Projet personnel</div>
                 </div>
                 <p className="project-desc">
-                  Application de rencontres pensée pour les étudiants et les communautés universitaires. <span className="project-link">campus-crush-h9df.onrender.com</span>
+                  Application de rencontres pensée pour les étudiants et les communautés universitaires.
                 </p>
               </article>
             </div>
