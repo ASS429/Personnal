@@ -12,8 +12,10 @@ import EducationSection from "@/components/EducationSection";
 import PersonalSection from "@/components/PersonalSection";
 import ContactSection from "@/components/ContactSection";
 
-const VIDEO_HERO =
-  "https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260314_131748_f2ca2a28-fed7-44c8-b9a9-bd9acdd5ec31.mp4";
+// Servie depuis le repo : l'originale vivait sur un CDN tiers hérité de
+// Lovable, qui aurait laissé le hero noir le jour où le lien expire.
+const VIDEO_HERO = "/hero.mp4";
+const POSTER_HERO = "/hero-poster.jpg";
 
 const WhatsAppIcon = ({ size = 18 }: { size?: number }) => (
   <svg
@@ -93,6 +95,13 @@ const Index = () => {
       <SiteNav />
 
       <section className="relative flex min-h-[100svh] flex-col overflow-hidden">
+        {/* Peinte immédiatement : sans elle le hero est noir le temps du fondu. */}
+        <div
+          aria-hidden="true"
+          className="absolute inset-0 bg-cover bg-bottom bg-no-repeat"
+          style={{ backgroundImage: `url(${POSTER_HERO})` }}
+        />
+
         <video
           ref={videoRef}
           className="absolute inset-0 h-full w-full object-cover object-bottom"
@@ -100,6 +109,7 @@ const Index = () => {
           autoPlay
           playsInline
           preload="auto"
+          poster={POSTER_HERO}
           src={VIDEO_HERO}
           style={{ opacity: 0 }}
           aria-hidden="true"
