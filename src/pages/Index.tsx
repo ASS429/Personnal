@@ -1,5 +1,9 @@
-import { useEffect, useRef } from "react";
-import { Globe, ArrowRight, Mail, FileText, Download } from "lucide-react";
+import { Suspense, lazy, useEffect, useRef } from "react";
+import { motion, useReducedMotion } from "framer-motion";
+import { ArrowDown, ArrowRight, FileText, Mail } from "lucide-react";
+import SiteNav from "@/components/SiteNav";
+// Three.js part en chunk separe : decoratif, il ne doit pas retarder le hero.
+const HeroHalo = lazy(() => import("@/components/HeroHalo"));
 import AboutSection from "@/components/AboutSection";
 import SkillsSection from "@/components/SkillsSection";
 import ExperienceSection from "@/components/ExperienceSection";
@@ -8,7 +12,9 @@ import EducationSection from "@/components/EducationSection";
 import PersonalSection from "@/components/PersonalSection";
 import ContactSection from "@/components/ContactSection";
 
-// WhatsApp brand icon (inline SVG — lucide doesn't ship one)
+const VIDEO_HERO =
+  "https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260314_131748_f2ca2a28-fed7-44c8-b9a9-bd9acdd5ec31.mp4";
+
 const WhatsAppIcon = ({ size = 18 }: { size?: number }) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
@@ -22,19 +28,21 @@ const WhatsAppIcon = ({ size = 18 }: { size?: number }) => (
   </svg>
 );
 
-const animateOpacity = (el: HTMLVideoElement, to: number, duration = 500) => {
-  const from = parseFloat(el.style.opacity || "0");
-  const start = performance.now();
-  const step = (now: number) => {
-    const t = Math.min(1, (now - start) / duration);
-    el.style.opacity = String(from + (to - from) * t);
-    if (t < 1) requestAnimationFrame(step);
+/** Fondu court en fin de boucle : une coupe nette casserait l'ambiance. */
+const fondre = (el: HTMLVideoElement, vers: number, duree = 520) => {
+  const depart = parseFloat(el.style.opacity || "0");
+  const t0 = performance.now();
+  const pas = (now: number) => {
+    const t = Math.min(1, (now - t0) / duree);
+    el.style.opacity = String(depart + (vers - depart) * t);
+    if (t < 1) requestAnimationFrame(pas);
   };
-  requestAnimationFrame(step);
+  requestAnimationFrame(pas);
 };
 
 const Index = () => {
   const videoRef = useRef<HTMLVideoElement>(null);
+  const sansMouvement = useReducedMotion();
 
   useEffect(() => {
     const v = videoRef.current;
@@ -43,20 +51,15 @@ const Index = () => {
 
     const onCanPlay = () => {
       v.play().catch(() => {});
-      animateOpacity(v, 1, 500);
+      fondre(v, 1);
     };
     const onTimeUpdate = () => {
-      if (v.duration && v.duration - v.currentTime <= 0.55) {
-        animateOpacity(v, 0, 500);
-      }
+      if (v.duration && v.duration - v.currentTime <= 0.55) fondre(v, 0);
     };
     const onEnded = () => {
-      v.style.opacity = "0";
-      setTimeout(() => {
-        v.currentTime = 0;
-        v.play().catch(() => {});
-        animateOpacity(v, 1, 500);
-      }, 100);
+      v.currentTime = 0;
+      v.play().catch(() => {});
+      fondre(v, 1);
     };
 
     v.addEventListener("canplay", onCanPlay, { once: true });
@@ -68,133 +71,161 @@ const Index = () => {
     };
   }, []);
 
+  // Chorégraphie d'entrée : chaque élément arrive après le précédent.
+  const entree = (delai: number) =>
+    sansMouvement
+      ? { initial: false as const, animate: { opacity: 1, y: 0 } }
+      : {
+          initial: { opacity: 0, y: 26 },
+          animate: { opacity: 1, y: 0 },
+          transition: { duration: 0.9, ease: [0.16, 1, 0.3, 1] as const, delay: delai },
+        };
+
   return (
-    <div className="bg-black min-h-screen">
-      {/* HERO */}
-      <section className="min-h-screen overflow-hidden relative flex flex-col">
+    <div id="top" className="min-h-screen bg-bg text-ink">
+      <a
+        href="#about"
+        className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-nav focus:rounded-full focus:bg-accent focus:px-4 focus:py-2 focus:text-accent-ink"
+      >
+        Aller au contenu
+      </a>
+
+      <SiteNav />
+
+      <section className="relative flex min-h-[100svh] flex-col overflow-hidden">
         <video
           ref={videoRef}
-          className="absolute inset-0 w-full h-full object-cover object-bottom"
+          className="absolute inset-0 h-full w-full object-cover object-bottom"
           muted
           autoPlay
           playsInline
           preload="auto"
-          src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260314_131748_f2ca2a28-fed7-44c8-b9a9-bd9acdd5ec31.mp4"
+          src={VIDEO_HERO}
           style={{ opacity: 0 }}
+          aria-hidden="true"
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-black/60 pointer-events-none" />
 
-        {/* Navbar */}
-        <nav className="relative z-20 px-6 py-6">
-          <div className="liquid-glass rounded-full max-w-5xl mx-auto px-6 py-3 flex items-center justify-between">
-            <div className="flex items-center">
-              <div className="flex items-center gap-2">
-                <Globe size={22} className="text-white" />
-                <span className="text-white font-semibold text-lg tracking-tight">Arfang</span>
-              </div>
-              <div className="hidden md:flex items-center gap-7 ml-8">
-                <a href="#about" className="text-white/80 hover:text-white text-sm font-medium">À propos</a>
-                <a href="#skills" className="text-white/80 hover:text-white text-sm font-medium">Compétences</a>
-                <a href="#projects" className="text-white/80 hover:text-white text-sm font-medium">Projets</a>
-                <a href="#education" className="text-white/80 hover:text-white text-sm font-medium">Formation</a>
-              </div>
-            </div>
-            <a
-              href="#contact"
-              className="liquid-glass rounded-full px-5 py-2 text-white text-sm font-medium"
-            >
-              Contact
-            </a>
-          </div>
-        </nav>
+        {/* Les étoiles 3D prolongent celles de la vidéo. */}
+        <Suspense fallback={null}>
+          <HeroHalo className="pointer-events-none absolute inset-0 z-veil" />
+        </Suspense>
 
-        {/* Hero content */}
-        <div className="relative z-10 flex-1 flex flex-col items-center justify-center px-6 py-12 text-center -translate-y-[10%] gap-8">
-          <p className="text-white/60 text-xs md:text-sm tracking-[0.3em] uppercase liquid-glass rounded-full px-5 py-2">
-            Arfang Souleymane Sané
-          </p>
+        {/*
+          Le voile fond vers --bg : le hero reste nocturne, mais il se raccorde
+          au thème de la page, sombre comme clair.
+        */}
+        <div
+          className="pointer-events-none absolute inset-0 z-veil"
+          style={{
+            background:
+              "linear-gradient(to bottom, oklch(0.155 0.032 237 / 0.55) 0%, oklch(0.155 0.032 237 / 0.15) 28%, oklch(0.155 0.032 237 / 0.45) 64%, var(--bg) 100%)",
+          }}
+        />
 
-          <h1
-            className="text-5xl sm:text-6xl md:text-8xl lg:text-9xl text-white tracking-tight leading-[1.02]"
-            style={{ fontFamily: "'Instrument Serif', serif" }}
+        {/*
+          Voile radial sous le bloc de texte : sans lui, le champ d'étoiles
+          passe derrière le paragraphe et le rend illisible.
+        */}
+        <div
+          className="pointer-events-none absolute inset-0 z-veil"
+          style={{
+            background:
+              "radial-gradient(62% 48% at 50% 47%, oklch(0.13 0.03 237 / 0.62) 0%, oklch(0.13 0.03 237 / 0.28) 55%, transparent 100%)",
+          }}
+        />
+
+        <div className="relative z-content mx-auto flex w-full max-w-4xl flex-1 flex-col items-center justify-center gap-6 px-6 pb-24 pt-28 text-center">
+          <motion.p
+            {...entree(0.35)}
+            className="text-fluid--1 font-medium tracking-wide text-white/75"
           >
-            Développeur, <em className="italic text-white/80">Gestionnaire</em> & Designer.
-          </h1>
+            Arfang Souleymane Sané
+          </motion.p>
 
-          <p className="text-white/70 text-base md:text-lg leading-relaxed max-w-xl px-4">
-            Étudiant en Master MIAGE (Méthodes Informatiques Appliquées à la Gestion des Entreprises)
-            à l'UGB. Je pilote des projets numériques, conçois des interfaces et développe des
-            solutions qui accompagnent les entreprises et créateurs africains.
-          </p>
+          <motion.h1
+            {...entree(0.45)}
+            className="font-display text-fluid-5 font-semibold text-white"
+          >
+            Développeur,{" "}
+            <em className="font-medium italic text-accent-onvideo">Gestionnaire</em> &amp;
+            Designer.
+          </motion.h1>
 
-          <div className="flex items-center gap-3 flex-wrap justify-center">
+          <motion.p
+            {...entree(0.6)}
+            className="max-w-[52ch] text-fluid-0 leading-relaxed text-white/90"
+          >
+            Étudiant en Master MIAGE à l'Université Gaston Berger de Saint-Louis. Je
+            pilote des projets numériques, conçois des interfaces et développe des
+            solutions pour les entreprises et créateurs africains.
+          </motion.p>
+
+          <motion.div
+            {...entree(0.75)}
+            className="flex flex-wrap items-center justify-center gap-3 pt-2"
+          >
             <a
               href="#projects"
-              className="bg-white rounded-full pl-6 pr-2 py-2 text-black text-sm font-medium flex items-center gap-3 hover:scale-105 transition-transform"
+              className="group flex items-center gap-3 rounded-full bg-accent-onvideo py-2 pl-6 pr-2 text-fluid--1 font-semibold text-accent-onvideo-ink transition-transform duration-300 ease-out-quint hover:scale-[1.04]"
             >
               Voir les projets
-              <span className="bg-black rounded-full p-2 text-white">
-                <ArrowRight size={16} />
+              <span className="grid h-8 w-8 place-items-center rounded-full bg-accent-onvideo-ink text-accent-onvideo transition-transform duration-300 ease-out-quint group-hover:translate-x-0.5">
+                <ArrowRight size={15} />
               </span>
             </a>
 
-            {/* CV — split button: view + download */}
-            <div className="liquid-glass rounded-full flex items-center overflow-hidden">
-              <a
-                href="/cv"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="pl-5 pr-4 py-3 text-white text-sm font-medium flex items-center gap-2 hover:bg-white/5 transition-colors"
-                aria-label="Voir le CV"
-              >
-                <FileText size={16} /> Voir mon CV
-              </a>
-            </div>
+            <a
+              href="/cv"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="panel-onvideo flex items-center gap-2 rounded-full px-5 py-3 text-fluid--1 font-medium transition-colors duration-300 hover:bg-white/10"
+            >
+              <FileText size={15} /> Voir mon CV
+            </a>
 
             <a
               href="mailto:sanarfang429@gmail.com"
-              className="liquid-glass rounded-full px-6 py-3 text-white text-sm font-medium hover:bg-white/5 transition-colors flex items-center gap-2"
+              className="panel-onvideo flex items-center gap-2 rounded-full px-5 py-3 text-fluid--1 font-medium transition-colors duration-300 hover:bg-white/10"
             >
-              <Mail size={16} /> Me contacter
+              <Mail size={15} /> Me contacter
             </a>
-          </div>
+
+            <a
+              href="https://wa.me/221781571009"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="panel-onvideo grid h-11 w-11 place-items-center rounded-full transition-colors duration-300 hover:bg-white/10"
+              aria-label="Écrire sur WhatsApp"
+            >
+              <WhatsAppIcon size={17} />
+            </a>
+          </motion.div>
         </div>
 
-        {/* Social footer */}
-        <div className="relative z-10 flex justify-center gap-4 pb-12">
-          <a
-            href="mailto:sanarfang429@gmail.com"
-            className="liquid-glass rounded-full p-4 text-white/80 hover:text-white hover:bg-white/5 transition-all"
-            aria-label="Email"
+        <motion.a
+          {...entree(1.1)}
+          href="#about"
+          className="relative z-content mx-auto mb-8 grid h-11 w-11 place-items-center rounded-full text-white/55 transition-colors hover:text-white"
+          aria-label="Faire défiler vers À propos"
+        >
+          <motion.span
+            animate={sansMouvement ? undefined : { y: [0, 5, 0] }}
+            transition={{ duration: 2.4, repeat: Infinity, ease: "easeInOut" }}
           >
-            <Mail size={18} />
-          </a>
-          <a
-            href="https://wa.me/221781571009"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="liquid-glass rounded-full p-4 text-white/80 hover:text-white hover:bg-white/5 transition-all"
-            aria-label="WhatsApp"
-          >
-            <WhatsAppIcon size={18} />
-          </a>
-          <a
-            href="#about"
-            className="liquid-glass rounded-full p-4 text-white/80 hover:text-white hover:bg-white/5 transition-all"
-            aria-label="À propos"
-          >
-            <Globe size={18} />
-          </a>
-        </div>
+            <ArrowDown size={18} />
+          </motion.span>
+        </motion.a>
       </section>
 
-      <AboutSection />
-      <SkillsSection />
-      <ExperienceSection />
-      <ProjectsSection />
-      <EducationSection />
-      <PersonalSection />
-      <ContactSection />
+      <main>
+        <AboutSection />
+        <SkillsSection />
+        <ExperienceSection />
+        <ProjectsSection />
+        <EducationSection />
+        <PersonalSection />
+        <ContactSection />
+      </main>
     </div>
   );
 };
