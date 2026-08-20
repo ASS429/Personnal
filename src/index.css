@@ -1,77 +1,212 @@
-@import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&display=swap');
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-@layer base {
-  :root {
-    --background: 0 0% 0%;
-    --foreground: 0 0% 100%;
-    --card: 0 0% 0%;
-    --card-foreground: 0 0% 100%;
-    --popover: 0 0% 0%;
-    --popover-foreground: 0 0% 100%;
-    --primary: 0 0% 100%;
-    --primary-foreground: 0 0% 0%;
-    --secondary: 0 0% 10%;
-    --secondary-foreground: 0 0% 100%;
-    --muted: 0 0% 10%;
-    --muted-foreground: 0 0% 60%;
-    --accent: 0 0% 10%;
-    --accent-foreground: 0 0% 100%;
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 0 0% 100%;
-    --border: 0 0% 15%;
-    --input: 0 0% 15%;
-    --ring: 0 0% 100%;
-    --radius: 0.5rem;
-  }
-}
+/*
+  Palette échantillonnée sur la vidéo du hero : ciel de nuit oklch(.33 .066 237)
+  et lueur des écrans / soucis oklch(.53 .097 87). Nuit bleue + or chaud.
+  Le thème clair garde la teinte 237 dans ses neutres : un blanc cassé froid,
+  jamais un crème.
+*/
 
 @layer base {
-  * {
-    @apply border-border;
+  :root {
+    /* --- thème clair (défaut) --- */
+    --bg: oklch(0.975 0.008 237);
+    --surface: oklch(0.945 0.014 237);
+    --raised: oklch(0.91 0.018 237);
+    --border: oklch(0.86 0.022 237);
+    --ink: oklch(0.245 0.05 237);
+    --muted: oklch(0.455 0.038 237);
+    --faint: oklch(0.57 0.032 237);
+    --accent: oklch(0.53 0.125 87);
+    --accent-ink: oklch(0.99 0.01 87);
+    --halo: oklch(0.53 0.125 87 / 0.16);
+    --veil: 0.72;
+
+    /*
+      Le hero reste nocturne dans les deux thèmes : son or ne doit donc pas
+      suivre le thème, sinon il s'assombrit et devient illisible sur la vidéo.
+    */
+    --accent-onvideo: oklch(0.81 0.13 87);
+    --accent-onvideo-ink: oklch(0.18 0.04 87);
+    --shadow: 0 1px 2px oklch(0.245 0.05 237 / 0.06), 0 8px 24px oklch(0.245 0.05 237 / 0.08);
+
+    /* rythme typographique fluide, ratio ~1.28 */
+    --step--1: clamp(0.83rem, 0.8rem + 0.14vw, 0.92rem);
+    --step-0: clamp(1rem, 0.96rem + 0.2vw, 1.09rem);
+    --step-1: clamp(1.25rem, 1.18rem + 0.36vw, 1.5rem);
+    --step-2: clamp(1.56rem, 1.44rem + 0.62vw, 2rem);
+    --step-3: clamp(1.95rem, 1.74rem + 1.05vw, 2.75rem);
+    --step-4: clamp(2.44rem, 2.06rem + 1.9vw, 3.9rem);
+    --step-5: clamp(3rem, 2.3rem + 3.4vw, 5.5rem);
+
+    --ease-out-quint: cubic-bezier(0.22, 1, 0.36, 1);
+    --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+
+    /* échelle z sémantique */
+    --z-base: 0;
+    --z-veil: 10;
+    --z-content: 20;
+    --z-sticky: 30;
+    --z-nav: 40;
   }
+
+  /* --- thème sombre : automatique, sauf si l'utilisateur a choisi clair --- */
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: oklch(0.155 0.032 237);
+      --surface: oklch(0.215 0.04 237);
+      --raised: oklch(0.265 0.044 237);
+      --border: oklch(0.33 0.04 237);
+      --ink: oklch(0.97 0.01 237);
+      --muted: oklch(0.76 0.022 237);
+      --faint: oklch(0.62 0.025 237);
+      --accent: oklch(0.81 0.13 87);
+      --accent-ink: oklch(0.18 0.04 87);
+      --halo: oklch(0.81 0.13 87 / 0.22);
+      --veil: 0.55;
+      --shadow: 0 1px 2px oklch(0 0 0 / 0.4), 0 12px 32px oklch(0 0 0 / 0.45);
+    }
+  }
+
+  /* --- thème sombre : choisi explicitement --- */
+  :root[data-theme="dark"] {
+    --bg: oklch(0.155 0.032 237);
+    --surface: oklch(0.215 0.04 237);
+    --raised: oklch(0.265 0.044 237);
+    --border: oklch(0.33 0.04 237);
+    --ink: oklch(0.97 0.01 237);
+    --muted: oklch(0.76 0.022 237);
+    --faint: oklch(0.62 0.025 237);
+    --accent: oklch(0.81 0.13 87);
+    --accent-ink: oklch(0.18 0.04 87);
+    --halo: oklch(0.81 0.13 87 / 0.22);
+    --veil: 0.55;
+    --shadow: 0 1px 2px oklch(0 0 0 / 0.4), 0 12px 32px oklch(0 0 0 / 0.45);
+  }
+
+  * {
+    border-color: var(--border);
+  }
+
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
+
   body {
-    @apply bg-background text-foreground;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: "Archivo", ui-sans-serif, system-ui, sans-serif;
+    font-size: var(--step-0);
+    line-height: 1.6;
+    font-synthesis-weight: none;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* Le texte clair sur fond sombre a besoin d'un interlignage plus généreux. */
+  :root[data-theme="dark"] body {
+    line-height: 1.65;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) body {
+      line-height: 1.65;
+    }
+  }
+
+  h1,
+  h2,
+  h3 {
+    font-family: "Petrona", Georgia, serif;
+    font-weight: 600;
+    line-height: 1.08;
+    letter-spacing: -0.022em;
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  ::selection {
+    background: var(--accent);
+    color: var(--accent-ink);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+    border-radius: 4px;
   }
 }
 
 @layer components {
-  .liquid-glass {
-    background: rgba(255, 255, 255, 0.01);
-    background-blend-mode: luminosity;
-    backdrop-filter: blur(4px);
-    -webkit-backdrop-filter: blur(4px);
-    border: none;
-    box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.1);
+  /*
+    Panneau : une surface franche avec une arête éclairée en haut, comme un
+    objet posé sous la lampe. Remplace le verre dépoli d'avant.
+  */
+  .panel {
+    background: color-mix(in oklab, var(--surface) 88%, transparent);
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow);
     position: relative;
-    overflow: hidden;
+    isolation: isolate;
   }
 
-  .liquid-glass::before {
-    content: '';
+  .panel::before {
+    content: "";
     position: absolute;
-    inset: 0;
-    border-radius: inherit;
-    padding: 1.4px;
-    background: linear-gradient(
-      180deg,
-      rgba(255, 255, 255, 0.45) 0%,
-      rgba(255, 255, 255, 0.15) 20%,
-      rgba(255, 255, 255, 0) 40%,
-      rgba(255, 255, 255, 0) 60%,
-      rgba(255, 255, 255, 0.15) 80%,
-      rgba(255, 255, 255, 0.45) 100%
-    );
-    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-    -webkit-mask-composite: xor;
-    mask-composite: exclude;
+    inset-inline: 12%;
+    top: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--accent), transparent);
+    opacity: 0.5;
     pointer-events: none;
   }
 
-  .font-serif-i {
-    font-family: 'Instrument Serif', serif;
+  /* Panneau posé sur la vidéo du hero : doit rester lisible sur l'image. */
+  .panel-onvideo {
+    background: oklch(0.155 0.032 237 / 0.52);
+    backdrop-filter: blur(14px) saturate(1.2);
+    -webkit-backdrop-filter: blur(14px) saturate(1.2);
+    border: 1px solid oklch(0.97 0.01 237 / 0.14);
+    color: oklch(0.97 0.01 237);
+  }
+
+  .u-measure {
+    max-width: 68ch;
+  }
+
+  /* Carte projet inclinable : la perspective vit sur le parent. */
+  .tilt-scene {
+    perspective: 1100px;
+  }
+
+  .tilt-card {
+    transform-style: preserve-3d;
+    will-change: transform;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
   }
 }

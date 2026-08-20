@@ -29,13 +29,13 @@ const EducationSection = () => {
   const inView = useInView(ref, { once: true, margin: "-100px" });
 
   return (
-    <section id="education" ref={ref} className="bg-black py-28 md:py-40 px-6 overflow-hidden">
+    <section id="education" ref={ref} className="bg-bg py-28 md:py-40 px-6 overflow-hidden">
       <div className="max-w-5xl mx-auto">
         <motion.p
           initial={{ opacity: 0, y: 20 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.6 }}
-          className="text-white/40 text-sm tracking-widest uppercase mb-8"
+          className="text-faint text-sm tracking-widest uppercase mb-8"
         >
           Formation
         </motion.p>
@@ -43,9 +43,9 @@ const EducationSection = () => {
           initial={{ opacity: 0, y: 40 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.8, delay: 0.1 }}
-          className="text-4xl md:text-6xl text-white tracking-tight mb-12 md:mb-16"
+          className="text-4xl md:text-6xl text-ink tracking-tight mb-12 md:mb-16"
         >
-          Parcours <span className="font-serif-i italic text-white/60">académique</span>.
+          Parcours <span className="font-display italic text-accent">académique</span>.
         </motion.h2>
 
         <div className="flex flex-col">
@@ -55,14 +55,14 @@ const EducationSection = () => {
               initial={{ opacity: 0, y: 30 }}
               animate={inView ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.6, delay: 0.1 * (i + 1) }}
-              className="grid grid-cols-12 gap-4 py-6 md:py-8 border-t border-white/10 last:border-b"
+              className="grid grid-cols-12 gap-4 py-6 md:py-8 border-t border-line last:border-b"
             >
-              <p className="col-span-12 md:col-span-3 text-white/40 text-sm tracking-wider">
+              <p className="col-span-12 md:col-span-3 text-faint text-sm tracking-wider">
                 {e.dates}
               </p>
               <div className="col-span-12 md:col-span-9">
-                <h3 className="text-white text-xl md:text-2xl tracking-tight mb-1">{e.school}</h3>
-                <p className="text-white/50 text-sm md:text-base">{e.degree}</p>
+                <h3 className="text-ink text-fluid-2 tracking-tight mb-1">{e.school}</h3>
+                <p className="text-muted text-sm md:text-base">{e.degree}</p>
               </div>
             </motion.div>
           ))}

@@ -11,14 +11,14 @@ const ContactSection = () => {
     <section
       id="contact"
       ref={ref}
-      className="bg-black pt-28 md:pt-40 pb-16 md:pb-20 px-6 overflow-hidden bg-[radial-gradient(ellipse_at_bottom,_rgba(255,255,255,0.04)_0%,_transparent_70%)]"
+      className="bg-bg pt-28 md:pt-40 pb-16 md:pb-20 px-6 overflow-hidden bg-[radial-gradient(ellipse_at_bottom,_rgba(255,255,255,0.04)_0%,_transparent_70%)]"
     >
       <div className="max-w-5xl mx-auto text-center flex flex-col items-center gap-10">
         <motion.p
           initial={{ opacity: 0, y: 20 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.6 }}
-          className="text-white/40 text-sm tracking-widest uppercase"
+          className="text-faint text-sm tracking-widest uppercase"
         >
           Contact
         </motion.p>
@@ -27,9 +27,9 @@ const ContactSection = () => {
           initial={{ opacity: 0, y: 40 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.8, delay: 0.1 }}
-          className="text-5xl md:text-7xl lg:text-8xl text-white tracking-tight leading-[1.05]"
+          className="text-5xl md:text-7xl lg:text-8xl text-ink tracking-tight leading-[1.05]"
         >
-          Construisons <span className="font-serif-i italic text-white/70">quelque chose</span>
+          Construisons <span className="font-display italic text-accent">quelque chose</span>
           <br />
           ensemble.
         </motion.h2>
@@ -40,11 +40,11 @@ const ContactSection = () => {
           animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.7, delay: 0.25 }}
           whileHover={{ scale: 1.03 }}
-          className="liquid-glass rounded-full pl-6 pr-2 py-2 flex items-center gap-3"
+          className="panel rounded-full pl-6 pr-2 py-2 flex items-center gap-3"
         >
-          <Mail size={18} className="text-white/70" />
-          <span className="text-white text-sm md:text-base">{email}</span>
-          <span className="bg-white rounded-full p-2.5 text-black">
+          <Mail size={18} className="text-muted" />
+          <span className="text-ink text-sm md:text-base">{email}</span>
+          <span className="bg-accent rounded-full p-2.5 text-accent-ink">
             <ArrowUpRight size={16} />
           </span>
         </motion.a>
@@ -53,7 +53,7 @@ const ContactSection = () => {
           initial={{ opacity: 0 }}
           animate={inView ? { opacity: 1 } : {}}
           transition={{ duration: 0.8, delay: 0.4 }}
-          className="text-white/30 text-xs tracking-widest uppercase pt-16"
+          className="text-faint text-xs tracking-widest uppercase pt-16"
         >
           © {new Date().getFullYear()} Arfang Souleymane Sané
         </motion.p>

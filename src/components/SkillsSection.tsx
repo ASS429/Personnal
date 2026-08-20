@@ -58,7 +58,7 @@ const SkillsSection = () => {
     <section
       id="skills"
       ref={ref}
-      className="bg-black py-28 md:py-40 px-6 overflow-hidden bg-[radial-gradient(ellipse_at_center,_rgba(255,255,255,0.02)_0%,_transparent_60%)]"
+      className="bg-bg py-28 md:py-40 px-6 overflow-hidden bg-[radial-gradient(ellipse_at_center,_rgba(255,255,255,0.02)_0%,_transparent_60%)]"
     >
       <div className="max-w-6xl mx-auto">
         <motion.div
@@ -67,10 +67,10 @@ const SkillsSection = () => {
           transition={{ duration: 0.7 }}
           className="flex items-end justify-between mb-12 md:mb-16"
         >
-          <h2 className="text-3xl md:text-5xl text-white tracking-tight">
-            Ce que je <span className="font-serif-i italic text-white/60">fais</span>
+          <h2 className="text-fluid-4 text-ink tracking-tight">
+            Ce que je <span className="font-display italic text-accent">fais</span>
           </h2>
-          <p className="text-white/40 text-sm hidden md:block">Compétences</p>
+          <p className="text-faint text-sm hidden md:block">Compétences</p>
         </motion.div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
@@ -82,21 +82,21 @@ const SkillsSection = () => {
                 initial={{ opacity: 0, y: 40 }}
                 animate={inView ? { opacity: 1, y: 0 } : {}}
                 transition={{ duration: 0.7, delay: 0.1 * (i + 1) }}
-                className={`liquid-glass rounded-3xl p-8 md:p-10${s.wide ? " md:col-span-2" : ""}`}
+                className={`panel rounded-3xl p-8 md:p-10${s.wide ? " md:col-span-2" : ""}`}
               >
                 <div className="flex items-start justify-between mb-6">
-                  <div className="liquid-glass rounded-2xl p-3">
-                    <Icon size={22} className="text-white" />
+                  <div className="panel rounded-2xl p-3">
+                    <Icon size={22} className="text-ink" />
                   </div>
-                  <p className="text-white/40 text-xs tracking-widest uppercase">{s.tag}</p>
+                  <p className="text-faint text-xs tracking-widest uppercase">{s.tag}</p>
                 </div>
-                <h3 className="text-white text-xl md:text-2xl mb-3 tracking-tight">{s.title}</h3>
-                <p className="text-white/50 text-sm leading-relaxed mb-5">{s.description}</p>
+                <h3 className="text-ink text-fluid-2 mb-3 tracking-tight">{s.title}</h3>
+                <p className="text-muted text-sm leading-relaxed mb-5">{s.description}</p>
                 <div className="flex flex-wrap gap-2">
                   {s.tags.map((t) => (
                     <span
                       key={t}
-                      className="border border-white/20 rounded-full px-3 py-1 text-white/70 text-xs tracking-wide"
+                      className="border border-line rounded-full px-3 py-1 text-muted text-xs tracking-wide"
                     >
                       {t}
                     </span>
