@@ -14,14 +14,6 @@ const ContactSection = () => {
       className="bg-bg pt-28 md:pt-40 pb-16 md:pb-20 px-6 overflow-hidden bg-[radial-gradient(ellipse_at_bottom,_rgba(255,255,255,0.04)_0%,_transparent_70%)]"
     >
       <div className="max-w-5xl mx-auto text-center flex flex-col items-center gap-10">
-        <motion.p
-          initial={{ opacity: 0, y: 20 }}
-          animate={inView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.6 }}
-          className="text-faint text-sm tracking-widest uppercase"
-        >
-          Contact
-        </motion.p>
 
         <motion.h2
           initial={{ opacity: 0, y: 40 }}

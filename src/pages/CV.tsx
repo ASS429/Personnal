@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import arfangPortrait from "../assets/arfang-portrait.jpeg";
 
 const HTML2PDF_SRC =
@@ -143,6 +144,38 @@ const handleDownload = async () => {
 };
 
 const CV = () => {
+  // L'A4 fait 794 px de large : sur un écran plus étroit on la réduit.
+  useEffect(() => {
+    const shell = document.querySelector<HTMLElement>(".cv-shell");
+    if (!shell) return;
+    const LARGEUR_A4 = 794;
+    const HAUTEUR_A4 = 1121;
+
+    const feuille = shell.querySelector<HTMLElement>(".cv-page");
+    if (!feuille) return;
+
+    const ajuster = () => {
+      const dispo = shell.clientWidth;
+      const echelle = Math.min(1, (dispo - 20) / LARGEUR_A4);
+      if (echelle < 1) {
+        // Origine haut-gauche : on recentre nous-mêmes, la boîte non
+        // transformée étant plus large que l'écran.
+        shell.style.setProperty("--echelle", String(echelle));
+        feuille.style.margin = `20px 0 0 ${(dispo - LARGEUR_A4 * echelle) / 2}px`;
+        shell.style.height = `${Math.ceil(HAUTEUR_A4 * echelle) + 40}px`;
+      } else {
+        shell.style.removeProperty("--echelle");
+        feuille.style.margin = "";
+        shell.style.height = "";
+      }
+    };
+
+    ajuster();
+    const ro = new ResizeObserver(ajuster);
+    ro.observe(document.documentElement);
+    return () => ro.disconnect();
+  }, []);
+
   const managementSkills = [
     "Comptabilité",
     "Économie",
@@ -504,13 +537,47 @@ const CV = () => {
           box-shadow: 0 14px 34px rgba(15, 23, 42, 0.28);
         }
         .print-btn:hover { filter: brightness(1.08); }
+
+        /*
+          Sous 840 px, la feuille A4 (794 px) ne rentre pas dans l'écran.
+          On la met à l'échelle plutôt que de la réagencer : le PDF exporté
+          doit rester identique au millimètre près.
+        */
+        @media screen and (max-width: 840px) {
+          .cv-shell {
+            overflow: hidden;
+          }
+          .cv-page {
+            box-shadow: 0 10px 30px rgba(15, 23, 42, 0.18) !important;
+          }
+          .print-btn {
+            left: 16px;
+            right: 16px;
+            bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+            padding: 15px 20px;
+            font-size: 15px;
+            text-align: center;
+          }
+        }
+
+        /* --echelle est posée par le composant : CSS ne sait pas diviser deux longueurs. */
+        .cv-page {
+          transform: scale(var(--echelle, 1));
+          transform-origin: top left;
+        }
+
+        /* Le clone exporté ne doit jamais hériter de cette mise à l'échelle. */
+        .cv-page.cv-export {
+          transform: none !important;
+        }
       `}</style>
 
       <button className="print-btn no-print" onClick={handleDownload}>
         Télécharger en PDF
       </button>
 
-      <div className="cv-page">
+      <div className="cv-shell">
+        <div className="cv-page">
         <aside className="sidebar">
           <div className="avatar">
             <img src={arfangPortrait} alt="Portrait de Arfang Souleymane Sané" />
@@ -675,6 +742,7 @@ const CV = () => {
             </div>
           </section>
         </main>
+        </div>
       </div>
     </>
   );

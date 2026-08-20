@@ -36,7 +36,7 @@ const ThemeToggle = ({ surVideo = false }: { surVideo?: boolean }) => {
             aria-label={label}
             title={label}
             onClick={() => setChoix(valeur)}
-            className="relative grid h-7 w-7 place-items-center rounded-full transition-colors duration-200"
+            className="relative grid h-11 w-11 place-items-center rounded-full transition-colors duration-200 sm:h-7 sm:w-7"
           >
             {actif && (
               <motion.span
@@ -50,7 +50,7 @@ const ThemeToggle = ({ surVideo = false }: { surVideo?: boolean }) => {
               />
             )}
             <Icone
-              size={13}
+              size={15}
               strokeWidth={2.1}
               className={`relative z-content ${
                 actif
