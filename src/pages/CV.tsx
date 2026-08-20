@@ -549,14 +549,25 @@ const CV = () => {
           .project-type { font-size: 13px; }
           .project-desc { font-size: 14px; }
 
+          /*
+            En or plutot qu'en bleu nuit : sur mobile le bouton flotte au-dessus
+            du bandeau sombre du CV, ou il se camouflait et masquait le contenu.
+          */
           .print-btn {
             left: 16px;
             right: 16px;
             bottom: calc(16px + env(safe-area-inset-bottom, 0px));
-            padding: 15px 20px;
+            padding: 16px 20px;
             font-size: 15px;
             text-align: center;
+            color: #1a1206;
+            background: #e5bb53;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
           }
+
+          /* De quoi faire defiler le bas du document au-dela du bouton. */
+          .sidebar { padding-bottom: 26px; }
+          .main { padding-bottom: 104px; }
         }
 
         /* Le clone exporté ne doit jamais hériter de cette mise à l'échelle. */
