@@ -1,12 +1,12 @@
 import { motion, useInView } from "framer-motion";
 import { useRef } from "react";
 import { ArrowUpRight } from "lucide-react";
-import actIcon from "@/assets/act-icon.png";
-import maVillaIcon from "@/assets/ma_villa.jpg";
-import samacommerceIcon from "@/assets/samacommerce-icon.png";
-import lartiskaIcon from "@/assets/lartiska.jpg";
-import campusCrushIcon from "@/assets/campus-crush-icon.png";
-import samaytontinesIcon from "@/assets/samaytontines-icon.png";
+import actIcon from "@/assets/act-icon.webp";
+import maVillaIcon from "@/assets/ma_villa.webp";
+import samacommerceIcon from "@/assets/samacommerce-icon.webp";
+import lartiskaIcon from "@/assets/lartiska.webp";
+import campusCrushIcon from "@/assets/campus-crush-icon.webp";
+import samaytontinesIcon from "@/assets/samaytontines-icon.webp";
 
 const projects = [
   {
