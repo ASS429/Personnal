@@ -533,7 +533,7 @@ const CV = () => {
             <div className="side-title">Langues</div>
             <div className="language-list">
               <div className="language-item"><strong>Français</strong><span>Excellent</span></div>
-              <div className="language-item"><strong>Anglais</strong><span>Excellent</span></div>
+              <div className="language-item"><strong>Anglais</strong><span>Avancé</span></div>
               <div className="language-item"><strong>Wolof</strong><span>Excellent</span></div>
             </div>
           </div>

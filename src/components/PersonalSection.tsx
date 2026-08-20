@@ -4,7 +4,7 @@ import { Languages, Heart, Code2, GraduationCap, Dumbbell, Compass } from "lucid
 
 const languages = [
   { name: "Français", level: "Excellent" },
-  { name: "Anglais", level: "Excellent" },
+  { name: "Anglais", level: "Avancé" },
   { name: "Wolof", level: "Excellent" },
 ];
 
