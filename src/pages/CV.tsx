@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import arfangPortrait from "../assets/arfang-portrait.jpeg";
 
 const HTML2PDF_SRC =
@@ -144,37 +143,6 @@ const handleDownload = async () => {
 };
 
 const CV = () => {
-  // L'A4 fait 794 px de large : sur un écran plus étroit on la réduit.
-  useEffect(() => {
-    const shell = document.querySelector<HTMLElement>(".cv-shell");
-    if (!shell) return;
-    const LARGEUR_A4 = 794;
-    const HAUTEUR_A4 = 1121;
-
-    const feuille = shell.querySelector<HTMLElement>(".cv-page");
-    if (!feuille) return;
-
-    const ajuster = () => {
-      const dispo = shell.clientWidth;
-      const echelle = Math.min(1, (dispo - 20) / LARGEUR_A4);
-      if (echelle < 1) {
-        // Origine haut-gauche : on recentre nous-mêmes, la boîte non
-        // transformée étant plus large que l'écran.
-        shell.style.setProperty("--echelle", String(echelle));
-        feuille.style.margin = `20px 0 0 ${(dispo - LARGEUR_A4 * echelle) / 2}px`;
-        shell.style.height = `${Math.ceil(HAUTEUR_A4 * echelle) + 40}px`;
-      } else {
-        shell.style.removeProperty("--echelle");
-        feuille.style.margin = "";
-        shell.style.height = "";
-      }
-    };
-
-    ajuster();
-    const ro = new ResizeObserver(ajuster);
-    ro.observe(document.documentElement);
-    return () => ro.disconnect();
-  }, []);
 
   const managementSkills = [
     "Comptabilité",
@@ -539,17 +507,48 @@ const CV = () => {
         .print-btn:hover { filter: brightness(1.08); }
 
         /*
-          Sous 840 px, la feuille A4 (794 px) ne rentre pas dans l'écran.
-          On la met à l'échelle plutôt que de la réagencer : le PDF exporté
-          doit rester identique au millimètre près.
+          Sous 794 px la feuille A4 est réagencée en une colonne, avec des
+          tailles lisibles au doigt. On interroge le conteneur et non le
+          viewport : le clone exporté vit dans .pdf-holder, large de 794 px,
+          hors de tout conteneur — il garde donc toujours la mise en page A4.
         */
-        @media screen and (max-width: 840px) {
-          .cv-shell {
-            overflow: hidden;
-          }
+        .cv-shell { container-type: inline-size; }
+
+        @container (max-width: 793px) {
           .cv-page {
-            box-shadow: 0 10px 30px rgba(15, 23, 42, 0.18) !important;
+            width: 100%;
+            height: auto;
+            min-height: 0;
+            overflow: visible;
+            grid-template-columns: 1fr;
+            margin: 0 !important;
+            box-shadow: none !important;
+            line-height: 1.55;
           }
+
+          .sidebar { padding: 28px 20px 26px; }
+          .sidebar::after { display: none; }
+          .main { padding: 28px 20px 96px; }
+          .header { margin-bottom: 20px; }
+
+          .name { font-size: 30px; line-height: 1.14; }
+          .title { font-size: 14px; }
+          .headline { font-size: 15px; padding: 14px 16px; }
+          .section-title { font-size: 17px; }
+          .text { font-size: 15px; }
+          .side-title { font-size: 14px; }
+          .contact-item { font-size: 14px; }
+          .contact-icon { font-size: 12px; }
+          .skill-heading { font-size: 15px; }
+          .side-tag { font-size: 13px; padding: 4px 10px; }
+          .language-item { font-size: 14px; }
+          .edu-degree { font-size: 16px; }
+          .edu-school { font-size: 14px; }
+          .edu-date { font-size: 13px; padding: 4px 9px; }
+          .project-title { font-size: 16px; }
+          .project-type { font-size: 13px; }
+          .project-desc { font-size: 14px; }
+
           .print-btn {
             left: 16px;
             right: 16px;
@@ -558,12 +557,6 @@ const CV = () => {
             font-size: 15px;
             text-align: center;
           }
-        }
-
-        /* --echelle est posée par le composant : CSS ne sait pas diviser deux longueurs. */
-        .cv-page {
-          transform: scale(var(--echelle, 1));
-          transform-origin: top left;
         }
 
         /* Le clone exporté ne doit jamais hériter de cette mise à l'échelle. */
@@ -638,16 +631,16 @@ const CV = () => {
         <main className="main">
           <header className="header">
             <h1 className="name">Arfang Souleymane Sané</h1>
-            <div className="title">Développeur Full-Stack · Gestionnaire · Designer</div>
+            <div className="title">Développeur Web Freelance · Full-Stack · Gestionnaire de projets</div>
             <div className="headline">
-              Profil hybride MIAGE : développement d'applications, gestion d'entreprise, finance, design produit et conduite de projets numériques.
+              Profil hybride MIAGE : développement d'applications, gestion d'entreprise, finance et conduite de projets. Deux sites clients livrés et en production.
             </div>
           </header>
 
           <section className="section compact">
             <div className="section-title">Profil</div>
             <p className="text">
-              Étudiant sénégalais en Master MIAGE à l'Université Gaston Berger de Saint-Louis, passionné par la technologie, l'innovation et l'entrepreneuriat. Formé en comptabilité, économie, finance d'entreprise et management de projet, je conçois des solutions numériques utiles aux entreprises et aux petites activités commerciales, de l'analyse des besoins au déploiement.
+              Développeur web freelance et étudiant en Master MIAGE à l'Université Gaston Berger de Saint-Louis. Formé en comptabilité, économie, finance d'entreprise et management de projet, je conçois des solutions numériques utiles aux entreprises et aux petites activités commerciales, de l'analyse des besoins au déploiement.
             </p>
           </section>
 
@@ -689,18 +682,33 @@ const CV = () => {
           </section>
 
           <section className="section compact">
-            <div className="section-title">Projets numériques</div>
+            <div className="section-title">Expérience</div>
             <div className="projects">
               <article className="project">
                 <div className="project-head">
-                  <div className="project-title">Africa Connection Tours — Site & back-office</div>
-                  <div className="project-type">Projet client</div>
+                  <div className="project-title">Développeur web freelance — Africa Connection Tours</div>
+                  <div className="project-type">Mai — juil. 2026</div>
                 </div>
                 <p className="project-desc">
-                  Site multilingue et back-office d'un tour-opérateur dakarois actif depuis 1996 : circuits, excursions et devis sur-mesure. <span className="project-link">act-senegal.com</span>
+                  Site multilingue et back-office sur mesure pour un tour-opérateur dakarois fondé en 1996 : catalogue de circuits, demandes de devis, espace d'administration. Livré dans les délais, en production sur le domaine du client. <span className="project-link">act-senegal.com</span>
                 </p>
               </article>
 
+              <article className="project">
+                <div className="project-head">
+                  <div className="project-title">Développeur web freelance — Lartiska</div>
+                  <div className="project-type">Mai — août 2026</div>
+                </div>
+                <p className="project-desc">
+                  Site vitrine d'un maître artisan en finitions de luxe : présentation des réalisations et prise de contact. Conception et développement. <span className="project-link">lartiska.onrender.com</span>
+                </p>
+              </article>
+            </div>
+          </section>
+
+          <section className="section compact">
+            <div className="section-title">Projets personnels</div>
+            <div className="projects">
               <article className="project">
                 <div className="project-head">
                   <div className="project-title">SamaCommerce — Gestion commerciale</div>
@@ -733,14 +741,6 @@ const CV = () => {
             </div>
           </section>
 
-          <section className="section">
-            <div className="section-title">Expérience</div>
-            <div className="experience-box">
-              <p className="text">
-                Pas encore d'expérience professionnelle formelle. Plusieurs projets personnels et académiques réalisés avec une approche complète : cadrage du besoin, conception, développement, tests, mise en ligne et amélioration continue.
-              </p>
-            </div>
-          </section>
         </main>
         </div>
       </div>
