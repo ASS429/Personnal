@@ -18,6 +18,8 @@ import samaytontinesIcon from "@/assets/samaytontines-icon.webp";
 type Projet = {
   tag: string;
   title: string;
+  /** Dans quel cadre le projet a ete mene : prestation, binome, projet perso. */
+  role: string;
   description: string;
   url: string | null;
   icon: string;
@@ -26,8 +28,9 @@ type Projet = {
 const PHARE: Projet = {
   tag: "Tourisme",
   title: "Africa Connection Tours",
+  role: "Prestation pour l'agence",
   description:
-    "Site multilingue et back-office d'un tour-opérateur dakarois actif depuis 1996 : circuits, excursions et devis sur-mesure au Sénégal et en Afrique de l'Ouest. Sur son propre domaine, en production.",
+    "Site multilingue et back-office d'un tour-opérateur dakarois actif depuis 1996 : circuits, excursions et devis sur-mesure au Sénégal et en Afrique de l'Ouest. Livré dans les délais, en production sur son propre domaine.",
   url: "https://act-senegal.com",
   icon: actIcon,
 };
@@ -36,14 +39,16 @@ const AUTRES: Projet[] = [
   {
     tag: "Immobilier",
     title: "Ma Villa",
+    role: "En binôme avec Abdou Ndour, juriste",
     description:
-      "Plateforme immobilière de luxe au Sénégal proposant des villas haut de gamme à la vente et à la location.",
+      "Plateforme immobilière de luxe au Sénégal : villas haut de gamme à la vente et à la location. Je couvre toute la partie informatique, conception et développement web et mobile.",
     url: "https://mavilla-web.onrender.com/",
     icon: maVillaIcon,
   },
   {
     tag: "Commerce",
     title: "SamaCommerce",
+    role: "Projet personnel",
     description:
       "Une application qui simplifie la gestion pour les commerçants : stocks, ventes et suivi clients réunis en un seul endroit.",
     url: "https://samacommerce-web.onrender.com/",
@@ -52,6 +57,7 @@ const AUTRES: Projet[] = [
   {
     tag: "Artisanat",
     title: "Lartiska",
+    role: "Prestation pour l'artisan",
     description:
       "Plateforme dédiée aux finitions de luxe au Sénégal : peinture artistique, fresques murales, carrelage et résine époxy.",
     url: "https://lartiska.onrender.com/",
@@ -60,6 +66,7 @@ const AUTRES: Projet[] = [
   {
     tag: "Social",
     title: "Campus Crush",
+    role: "Projet personnel",
     description:
       "Une application de rencontres pensée pour les étudiants, pour aider les communautés universitaires à se connecter.",
     url: null,
@@ -68,6 +75,7 @@ const AUTRES: Projet[] = [
   {
     tag: "Fintech",
     title: "SamayTontines",
+    role: "Projet personnel",
     description:
       "Une application qui facilite la gestion des tontines, ces associations d'épargne et de crédit rotatives.",
     url: "https://ma-tontine-frontend-1.onrender.com/",
@@ -179,7 +187,8 @@ const ProjectsSection = () => {
                   Projet phare
                 </span>
               </div>
-              <h3 className="mb-3 text-fluid-3 text-ink">{PHARE.title}</h3>
+              <h3 className="mb-1.5 text-fluid-3 text-ink">{PHARE.title}</h3>
+              <p className="mb-3 text-fluid--1 font-medium text-faint">{PHARE.role}</p>
               <p className="max-w-measure text-fluid-0 leading-relaxed text-muted">
                 {PHARE.description}
               </p>
@@ -212,7 +221,8 @@ const ProjectsSection = () => {
                     )}
                   </div>
                   <p className="mb-2 text-fluid--1 font-semibold text-accent">{p.tag}</p>
-                  <h3 className="mb-3 text-fluid-2 text-ink">{p.title}</h3>
+                  <h3 className="mb-1.5 text-fluid-2 text-ink">{p.title}</h3>
+                  <p className="mb-3 text-fluid--1 font-medium text-faint">{p.role}</p>
                   <p className="text-fluid--1 leading-relaxed text-muted">{p.description}</p>
                 </div>
                 <Pied projet={p} />
