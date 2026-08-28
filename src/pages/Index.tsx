@@ -12,8 +12,8 @@ import EducationSection from "@/components/EducationSection";
 import PersonalSection from "@/components/PersonalSection";
 import ContactSection from "@/components/ContactSection";
 
-// Servie depuis le repo : l'originale vivait sur un CDN tiers hérité de
-// Lovable, qui aurait laissé le hero noir le jour où le lien expire.
+// Servie depuis le repo : elle vivait sur un CDN tiers hérité du scaffolding,
+// qui aurait laissé le hero noir le jour où ce lien expire.
 const VIDEO_HERO = "/hero.mp4";
 const POSTER_HERO = "/hero-poster.jpg";
 
