@@ -84,7 +84,7 @@ const ExperienceSection = () => {
           className="mt-10 max-w-measure text-fluid-0 leading-relaxed text-muted"
         >
           À côté de ces prestations, je conçois et développe mes propres produits — SamaCommerce,
-          SamayTontines, Campus Crush — et je mène Ma Villa en binôme avec un juriste.
+          SamayTontines, Campus Crush — et je mène PasseTemps en binôme avec un juriste.
         </motion.p>
       </div>
     </section>

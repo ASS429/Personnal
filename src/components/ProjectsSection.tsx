@@ -9,7 +9,7 @@ import {
 import { useRef, type PointerEvent, type ReactNode } from "react";
 import { ArrowUpRight } from "lucide-react";
 import actIcon from "@/assets/act-icon.webp";
-import maVillaIcon from "@/assets/ma_villa.webp";
+import passetempsIcon from "@/assets/passetemps-icon.webp";
 import samacommerceIcon from "@/assets/samacommerce-icon.webp";
 import lartiskaIcon from "@/assets/lartiska.webp";
 import campusCrushIcon from "@/assets/campus-crush-icon.webp";
@@ -37,13 +37,13 @@ const PHARE: Projet = {
 
 const AUTRES: Projet[] = [
   {
-    tag: "Immobilier",
-    title: "Ma Villa",
+    tag: "Réservation",
+    title: "PasseTemps",
     role: "En binôme avec Abdou Ndour, juriste",
     description:
-      "Plateforme immobilière de luxe au Sénégal : villas haut de gamme à la vente et à la location. Je couvre toute la partie informatique, conception et développement web et mobile.",
-    url: "https://mavilla-web.onrender.com/",
-    icon: maVillaIcon,
+      "Plateforme de réservation de logements au Sénégal — villas, résidences, appartements et chambres, à la nuitée comme à la journée. Recherche par ville et dates, tarifs affichés, espace propriétaire. Je couvre toute la partie informatique, conception et développement web et mobile.",
+    url: "https://passetemps.sn",
+    icon: passetempsIcon,
   },
   {
     tag: "Commerce",
@@ -166,7 +166,7 @@ const ProjectsSection = () => {
           <h2 className="text-fluid-4 text-ink">
             Projets <span className="font-display italic text-accent">sélectionnés</span>
           </h2>
-          <p className="hidden text-fluid--1 text-muted md:block">Six produits, en ligne</p>
+          <p className="hidden text-fluid--1 text-muted md:block">Cinq en ligne, un en pause</p>
         </motion.div>
 
         {/* Le projet phare occupe toute la largeur : il ne se compare pas aux autres. */}
