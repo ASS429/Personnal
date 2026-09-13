@@ -21,9 +21,13 @@ type Projet = {
   /** Dans quel cadre le projet a ete mene : prestation, binome, projet perso. */
   role: string;
   description: string;
+  /** null : pas de lien public, la démo se demande par WhatsApp ou e-mail. */
   url: string | null;
   icon: string;
 };
+
+const WHATSAPP = "221781571009";
+const EMAIL = "sanarfang429@gmail.com";
 
 const PHARE: Projet = {
   tag: "Tourisme",
@@ -48,10 +52,10 @@ const AUTRES: Projet[] = [
   {
     tag: "Commerce",
     title: "SamaCommerce",
-    role: "Projet personnel",
+    role: "Projet de mémoire, Master MIAGE",
     description:
-      "Une application qui simplifie la gestion pour les commerçants : stocks, ventes et suivi clients réunis en un seul endroit.",
-    url: "https://samacommerce-web.onrender.com/",
+      "Gestion des stocks au détail, y compris la vente au fractionnement, et des ventes à crédit pour les commerçants du secteur informel. Mon mémoire y ajoute une aide à la décision par apprentissage automatique ; le prototype est appelé à devenir un SaaS.",
+    url: null,
     icon: samacommerceIcon,
   },
   {
@@ -66,10 +70,10 @@ const AUTRES: Projet[] = [
   {
     tag: "Social",
     title: "Campus Crush",
-    role: "Projet personnel",
+    role: "Mon SaaS",
     description:
-      "Une application de rencontres pensée pour les étudiants, pour aider les communautés universitaires à se connecter.",
-    url: null,
+      "Application de rencontres réservée aux étudiants vérifiés par leur campus : un crush anonyme n'est révélé que s'il est réciproque, puis la conversation continue en temps réel.",
+    url: "https://campus-crush.sn",
     icon: campusCrushIcon,
   },
   {
@@ -142,13 +146,43 @@ const Carte = ({ projet, delai, vue, className = "", children }: CarteProps) => 
   );
 };
 
-const Pied = ({ projet }: { projet: Projet }) => (
-  <p className="mt-6 truncate text-fluid--1 text-faint">
-    {projet.url
-      ? projet.url.replace(/^https?:\/\//, "").replace(/\/$/, "")
-      : "Service en pause, bientôt de retour en ligne"}
-  </p>
-);
+const lienContact =
+  "inline-flex min-h-11 items-center text-fluid--1 font-medium text-ink underline decoration-line underline-offset-4 transition-colors hover:text-accent";
+
+const Pied = ({ projet }: { projet: Projet }) => {
+  if (projet.url) {
+    return (
+      <p className="mt-6 truncate text-fluid--1 text-faint">
+        {projet.url.replace(/^https?:\/\//, "").replace(/\/$/, "")}
+      </p>
+    );
+  }
+
+  // Sans lien public : la carte n'est pas cliquable, les liens de contact
+  // peuvent donc y vivre sans imbriquer deux <a>.
+  const message = `Bonjour Arfang, j'aimerais voir une démo de ${projet.title}.`;
+  return (
+    <div className="mt-6">
+      <p className="text-fluid--1 text-faint">Démo sur demande</p>
+      <div className="flex flex-wrap gap-x-5">
+        <a
+          href={`https://wa.me/${WHATSAPP}?text=${encodeURIComponent(message)}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          className={lienContact}
+        >
+          Par WhatsApp
+        </a>
+        <a
+          href={`mailto:${EMAIL}?subject=${encodeURIComponent(`Démo de ${projet.title}`)}&body=${encodeURIComponent(message)}`}
+          className={lienContact}
+        >
+          Par e-mail
+        </a>
+      </div>
+    </div>
+  );
+};
 
 const ProjectsSection = () => {
   const ref = useRef(null);
@@ -166,7 +200,7 @@ const ProjectsSection = () => {
           <h2 className="text-fluid-4 text-ink">
             Projets <span className="font-display italic text-accent">sélectionnés</span>
           </h2>
-          <p className="hidden text-fluid--1 text-muted md:block">Cinq en ligne, un en pause</p>
+          <p className="hidden text-fluid--1 text-muted md:block">Cinq en ligne, un sur demande</p>
         </motion.div>
 
         {/* Le projet phare occupe toute la largeur : il ne se compare pas aux autres. */}

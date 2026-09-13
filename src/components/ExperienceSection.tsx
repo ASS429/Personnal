@@ -83,8 +83,9 @@ const ExperienceSection = () => {
           transition={{ duration: 0.7, delay: 0.52 }}
           className="mt-10 max-w-measure text-fluid-0 leading-relaxed text-muted"
         >
-          À côté de ces prestations, je conçois et développe mes propres produits — SamaCommerce,
-          SamayTontines, Campus Crush — et je mène PasseTemps en binôme avec un juriste.
+          À côté de ces prestations, je développe mes propres produits : Campus Crush, mon SaaS ;
+          SamaCommerce, issu de mon mémoire de Master et appelé à devenir un SaaS ; SamayTontines.
+          Je mène aussi PasseTemps en binôme avec un juriste.
         </motion.p>
       </div>
     </section>

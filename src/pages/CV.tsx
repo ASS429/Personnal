@@ -723,15 +723,35 @@ const CV = () => {
           </section>
 
           <section className="section compact">
-            <div className="section-title">Projets personnels</div>
+            <div className="section-title">Projets</div>
             <div className="projects">
               <article className="project">
                 <div className="project-head">
-                  <div className="project-title">SamaCommerce — Gestion commerciale</div>
-                  <div className="project-type">Projet personnel</div>
+                  <div className="project-title">PasseTemps — Réservation de logements</div>
+                  <div className="project-type">En binôme</div>
                 </div>
                 <p className="project-desc">
-                  Application de gestion pour commerçants : stocks, ventes et suivi clients réunis dans une interface simple. <span className="project-link">samacommerce-web.onrender.com</span>
+                  Réservation de villas, résidences et chambres au Sénégal, à la nuitée ou à la journée. J'assure toute la partie informatique, web et mobile. <span className="project-link">passetemps.sn</span>
+                </p>
+              </article>
+
+              <article className="project">
+                <div className="project-head">
+                  <div className="project-title">SamaCommerce — Gestion commerciale</div>
+                  <div className="project-type">Mémoire de Master</div>
+                </div>
+                <p className="project-desc">
+                  Stocks au détail et ventes à crédit pour le commerce informel ; le mémoire y ajoute l'apprentissage automatique. Futur SaaS, démo sur demande par WhatsApp ou e-mail.
+                </p>
+              </article>
+
+              <article className="project">
+                <div className="project-head">
+                  <div className="project-title">Campus Crush — Rencontres étudiantes</div>
+                  <div className="project-type">SaaS</div>
+                </div>
+                <p className="project-desc">
+                  Étudiants vérifiés, crush anonyme révélé si réciproque. <span className="project-link">campus-crush.sn</span>
                 </p>
               </article>
 
@@ -741,17 +761,7 @@ const CV = () => {
                   <div className="project-type">Projet personnel</div>
                 </div>
                 <p className="project-desc">
-                  Solution facilitant la gestion des tontines, des cotisations et des associations d'épargne rotatives. <span className="project-link">ma-tontine-frontend-1.onrender.com</span>
-                </p>
-              </article>
-
-              <article className="project">
-                <div className="project-head">
-                  <div className="project-title">Campus Crush — Social étudiant</div>
-                  <div className="project-type">Projet personnel</div>
-                </div>
-                <p className="project-desc">
-                  Application de rencontres pensée pour les étudiants et les communautés universitaires.
+                  Gestion des tontines et des cotisations. <span className="project-link">ma-tontine-frontend-1.onrender.com</span>
                 </p>
               </article>
             </div>
