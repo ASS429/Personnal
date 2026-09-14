@@ -115,9 +115,9 @@ const handleDownload = async () => {
           x: 0,
           y: 0,
           width: 794,
-          height: 1123,
+          height: 1122,
           windowWidth: 794,
-          windowHeight: 1123,
+          windowHeight: 1122,
         },
         jsPDF: {
           unit: "mm",
@@ -172,6 +172,25 @@ const CV = () => {
       <style>{`
         @page { size: A4; margin: 0; }
         * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        /*
+          La feuille globale du site met le texte et les bordures en oklch().
+          html2canvas, embarqué par html2pdf.js, ne sait pas lire oklch : il
+          plante, et pas seulement dans .cv-page, car html2pdf recopie la
+          feuille dans ses propres conteneurs ajoutés à la racine du body.
+          Ce style n'étant monté que sur /cv, on neutralise ces couleurs pour
+          toute la page. Hors @layer, ces règles l'emportent sur celles du
+          site ; les bordures du CV, plus spécifiques, gardent leur couleur.
+        */
+        html,
+        body {
+          color: #172033;
+        }
+        *,
+        *::before,
+        *::after {
+          border-color: currentColor;
+        }
         html, body { margin: 0; padding: 0; }
         body {
           background: #e9edf3;
@@ -210,21 +229,25 @@ const CV = () => {
           left: 0;
           top: 0;
           width: 794px;
-          height: 1123px;
+          height: 1122px;
           overflow: hidden;
           background: #ffffff;
           z-index: 999999;
           pointer-events: none;
         }
 
+        /*
+          1122 px et non 1123 : un A4 à 96 dpi mesure 1122,5 px. À 1123,
+          html2pdf déborde d'un pixel et ajoute une seconde page presque blanche.
+        */
         .cv-page.cv-export {
           margin: 0 !important;
           box-shadow: none !important;
           width: 794px !important;
-          height: 1123px !important;
-          min-height: 1123px !important;
+          height: 1122px !important;
+          min-height: 1122px !important;
           max-width: 794px !important;
-          max-height: 1123px !important;
+          max-height: 1122px !important;
           grid-template-columns: 253px 1fr !important;
           transform: none !important;
           overflow: hidden !important;
